@@ -30,6 +30,8 @@ class _RandomWordsState extends State<RandomWords> {
   final _suggestions = <WordPair>[];
   final _biggerFont = const TextStyle(fontSize: 18);
   
+  final _saved = <WordPair>{};
+
   Widget _buildSuggestions() {
     return ListView.builder(
       padding: const EdgeInsets.all(16),
@@ -49,11 +51,60 @@ class _RandomWordsState extends State<RandomWords> {
   }
 
   Widget _buildRow(WordPair pair) {
+    final alreadySaved = _saved.contains(pair);
+
     return ListTile(
       title: Text(
         pair.asPascalCase,
         style: _biggerFont,
       ),
+      trailing: Icon(
+        alreadySaved ? Icons.favorite : Icons.favorite_border,
+        color: alreadySaved ? Colors.red : null, 
+        semanticLabel: alreadySaved ? 'Remove from saved' : 'Save',
+      ),
+      onTap: () {
+        setState(() {
+          if(alreadySaved) {
+            _saved.remove(pair);
+          } else {
+            _saved.add(pair);
+          }
+        });
+      }
+    );
+  }
+
+  void _pushSaved() {
+    Navigator.of(context).push( 
+      MaterialPageRoute<void>(
+        builder: (context) {
+          final tiles = _saved.map(
+            (pair) {
+              return ListTile(
+                title: Text(
+                  pair.asPascalCase,
+                  style: _biggerFont
+                  ),
+              );
+            }
+          );
+
+          final divided = tiles.isNotEmpty ? ListTile.divideTiles(
+            context: context,
+            tiles: tiles
+          ).toList() : <Widget>[];
+
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Saved suggestions'),
+            ),
+            body: ListView(
+              children: divided,
+            )
+          );
+        }
+      )
     );
   }
 
@@ -62,6 +113,13 @@ class _RandomWordsState extends State<RandomWords> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Startup Name Generator'),
+        actions: [ 
+          IconButton(
+            icon: const Icon(Icons.list),
+            onPressed: _pushSaved,
+            tooltip: 'Saved Suggestions',
+          ),
+        ]
       ),
       body: _buildSuggestions(),
     );
