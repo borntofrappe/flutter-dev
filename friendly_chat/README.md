@@ -10,7 +10,6 @@ In terms of interface the application is designed with a series of widgets and c
 
 As a starting point import the material library and use the `Scaffold` widget to nest an application bar.
 
-
 ```dart
 import 'package:flutter/material.dart';
 
@@ -30,7 +29,7 @@ void main() {
 
 Restructure the application with two classes:
 
-1. a root-level `FriendlyChatApp` 
+1. a root-level `FriendlyChatApp`
 
 2. a child `ChatScreen` which rebuilds the interface when messages are sent and state changes
 
@@ -100,14 +99,11 @@ The output is essentially the same as the first snippet, but structured in multi
 
 In the `body` field of the `Scaffold` widget add the widget tree from a dedicated function.
 
-
 ```dart
 body: _buildTextComposer()
 ```
 
-
 Define the function in the class to return the widget tree.
-
 
 ```dart
 Widget _buildTextComposer() {
@@ -118,12 +114,7 @@ Widget _buildTextComposer() {
 }
 ```
 
-
-
 In the `child` field the goal is to add a `TextField` widget, a stateful widget with mutable state. To this end update `ChatScreen` to be mutable.
-
-
-
 
 ```dart
 class ChatScreen extends StatefulWidget {
@@ -143,8 +134,6 @@ class _ChatScreenState extends State<ChatScreen> {
 }
 ```
 
-
-
 For the `TextField` widget add multiple fields.
 
 ```dart
@@ -156,7 +145,6 @@ TextField(
   )
 ),
 ```
-
 
 - controller refers to an object managing text input
 
@@ -172,7 +160,6 @@ class _ChatScreenState extends State<ChatScreen> {
 }
 ```
 
-
 Define also the submit function receiving a string as input.
 
 ```dart
@@ -180,14 +167,11 @@ void _handleSubmitted(String text) {
 }
 ```
 
-
 In the body of the function start by invoking the controller to clear the text input.
 
 ```dart
 _textController.clear();
 ```
-
-
 
 Next to the text field the goal is to add a button.
 
@@ -201,9 +185,7 @@ Row(
 )
 ```
 
-
-
-Wrap the text field in a `Flexible` widget. 
+Wrap the text field in a `Flexible` widget.
 
 ```dart
 Row(
@@ -214,8 +196,6 @@ Row(
   ]
 )
 ```
-
-
 
 The step is necessary to have the input span the available width, considering the size of the screen and the size of the accompanying button.
 
@@ -261,7 +241,6 @@ Add the required `data` field to specify a color.
 data: IconThemeData(color: Theme.of(context).colorScheme.secondary),
 ```
 
-
 `context` describes the location of the widget in terms of the parent object, the state. This means you can change the theme at root level and have the change reflected in the widget.
 
 ## Add a UI for displaying messages
@@ -270,7 +249,7 @@ The UI for the messages is implemented in steps:
 
 1. create a widget for a single chat message
 
-2. nest the widget  into a scrollable list
+2. nest the widget into a scrollable list
 
 3. nest the scrollable list in a Scaffold widget
 
@@ -287,14 +266,13 @@ class ChatMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      
+
     );
   }
 }
 ```
 
-
-Beside a margin to separate the messages vertically add a a row to nest multiple widgets.
+Beside a margin to separate the messages vertically add a row to nest multiple widgets.
 
 ```dart
 child: Row(
@@ -302,7 +280,6 @@ child: Row(
   children: []
 )
 ```
-
 
 In the row add a container and a column.
 
@@ -323,7 +300,6 @@ CircleAvatar(
 ),
 ```
 
-
 In the column add a text for the full name and a container with the text for the message.
 
 ```dart
@@ -341,7 +317,7 @@ Define a string for the name.
 final String _name = 'Timothy';
 ```
 
-For the text of the mesasge define a variable and allow to change its value in the class constructor.
+For the text of the message define a variable to change its value in the class constructor.
 
 ```dart
 final String text;
@@ -356,13 +332,13 @@ ChatMessage chatMessage = ChatMessage(text: 'Hello');
 
 ### Scrollable list
 
-Update `_ChatScreenState` to define a list of messags.
+Update `_ChatScreenState` to define a list of messages.
 
 ```dart
 final List<ChatMessage> _messages = [];
 ```
 
-In the submit method use `setState` to add the latest message at the begining of the list.
+In the submit method use `setState` to add the latest message at the beginning of the list.
 
 ```dart
 ChatMessage message = ChatMessage(
@@ -426,7 +402,7 @@ Before the divider add a `Flexible` widget to wrap around a `ListView` widget.
 ```dart
 Flexible(
   child: ListView.builder(
-    
+
   )
 ),
 ```
@@ -439,9 +415,7 @@ ListView.builder(
 )
 ```
 
-
-
-Beside the function specify a padding and two additional fields: `reverse` and `itemCount`. The first field helps to show the messages in reverse order while the second field enumerates the number of items, so that the buildeer function contemplate every message.
+Beside the function specify a padding and two additional fields: `reverse` and `itemCount`. The first field helps to show the messages in reverse order while the second field enumerates the number of items, so that the builder function contemplates every message.
 
 ```dart
 ListView.builder(
@@ -450,6 +424,253 @@ ListView.builder(
 )
 ```
 
-<!-- ## Animate your app -->
+## Animate your app
 
-<!-- ## Apply finishing touches -->
+The goal is to have the messages translate vertically and from the bottom of the screen. This is achieved with an animation controller.
+
+Update `_ChatScreenState` to include the logic of the animation with a mixin
+
+```dart
+class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {}
+```
+
+Update `ChatMessage` to require an animation controller.
+
+```dart
+final AnimationController animationController;
+
+const ChatMessage(
+  {
+    required this.text,
+    required this.animationController,
+    Key? key
+  }
+) : super(key: key);
+```
+
+The class is made available through the mixin.
+
+When creating a message add an instance of `AnimationController` as well.
+
+```dart
+ChatMessage message = ChatMessage(
+  text: text,
+  animationController: AnimationController()
+);
+```
+
+In the controller specify duration with a `Duration` object and vsync.
+
+```dart
+duration: const Duration(milliseconds: 700),
+vsync: this,
+```
+
+`vsync` is required and points to the ticker provider, responsible for running the actual animation.
+
+After you add the message in the list invoke the `animationController` to run the animation forward.
+
+```dart
+message.animationController.forward();
+```
+
+The animation runs, but it is necessary to tie the changing value to a value. To this end wrap the `Container` widget for the chat message in a `SizeTransition` widget.
+
+```dart
+return SizeTransition(
+  child: Container()
+)
+```
+
+Add the required `sizeFactor` field to describe an instance of `CurvedAnimation`
+
+```dart
+sizeFactor: CurvedAnimation(),
+```
+
+In the instance specify a required `parent` field and `curve`.
+
+```dart
+sizeFactor: CurvedAnimation(
+  parent: null,
+  curve: null,
+),
+```
+
+For `parent` point to the animation controller, for `curve` use one of the constants from the `Curves` class.
+
+```dart
+parent: animationController,
+curve: Curves.easeOut,
+```
+
+In the SizeTransition widget, and after the size factor, finally specify `axisAlignment`.
+
+```dart
+sizeFactor: CurvedAnimation(
+),
+axisAlignment: 0.0,
+```
+
+With this setup `SizeTransition` animates a rectangle to gradually expose the text.
+
+### Dispose animations
+
+As the widget is destroyed it is good practice to free the device from the resources used by the animation. To this end update `_ChatScreenState` through the `dispose` lifecycle method.
+
+```dart
+void dispose() {
+  super.dispose();
+}
+```
+
+In the body of the function loop through the messages and refer to the controller to dispose of each animation.
+
+```dart
+for(ChatMessage message in _messages) {
+  message.animationController.dispose();
+}
+```
+
+## Apply finishing touches
+
+In the final step the course updates the design of the application.
+
+### Send button
+
+The idea is to process text input only when the widget includes text.
+
+In `_ChatScreenState` define a boolean to control the state of the input field.
+
+```dart
+bool _isComposing = false;
+```
+
+Update the boolean in two places:
+
+1. in the TextField widget through the `onChanged` field
+
+   The field describes a function which receives the text.
+
+   ```dart
+   TextField(
+     onChanged: (text) {}
+   )
+   ```
+
+   Depending on whether or not the text is an empty string update `_isComposing` through `setState`.
+
+   ```dart
+   setState(() {
+     _isComposing = text.isNotEmpty;
+   })
+   ```
+
+2. in the `_handleSubmit` method as the text field is cleared
+
+   ```dart
+   setState(() {
+     _isComposing = false;
+   })
+   ```
+
+Consider the boolean in several instances:
+
+- in the `onSubmitted` field of the text widget to submit the text only if the boolean instructs a non-empty field
+
+  ```dart
+  onSubmitted = _isComposing ? _handleSubmitted: null,
+  ```
+
+- in the `onPressed` field of the button to achieve the same operation through the button
+
+  ```dart
+  onPressed: _isComposing ? () => _handleSubmitted(_textController.text) : null,
+  ```
+
+### Wrap long lines
+
+Wrap the `Column` widget responsible for the message in an `Expanded` widget.
+
+```dart
+Expanded(
+  child: Column,
+)
+```
+
+The widget imposes layout constraints so that the widget is limited to the screen's width.
+
+Without this precaution, at least on Visual Studio Code, Dart highlights an overflow of some pixels.
+
+### Themes
+
+The idea is to change the theme and slightly tweak the appearance of the application considering the IOS operating system.
+
+Import the foundation library.
+
+```dart
+import 'package:flutter/foundation.dart';
+```
+
+The module is necessary to evaluate the value of `defaultTargetPlatform`.
+
+Define two themes as instances of `ThemeData`.
+
+```dart
+final ThemeData kIOSTheme = ThemeData(
+  primarySwatch: Colors.orange,
+  primaryColor: Colors.grey[100]
+);
+
+final ThemeData kDefaultTheme = ThemeData(
+  colorScheme: ColorScheme.fromSwatch(
+    primarySwatch: Colors.purple
+  ).copyWith(secondary: Colors.orangeAccent[400])
+);
+```
+
+The idea is to use `kIOSTheme` if the platform matches IOS, And rely on `kDefaultTheme` otherwise.
+
+Use `defaultTargetPlatform` directly to set the theme on the instance of `MaterialApp`.
+
+```dart
+return MaterialApp(
+  title: 'FriendlyChat',
+  theme: defaultTargetPlatform == TargetPlatform.iOS ? kIOSTheme : kDefaultTheme
+)
+```
+
+For nested widgets consider instead the platform set on the context of the parent widget.
+
+```diff
+-defaultTargetPlatform
++Theme.of(context).platform
+```
+
+Use the value to:
+
+- change the elevation of the application bar
+
+- change the widget used as a button, `CupertinoButton` or IconButton`
+
+  For the cupertino button you need to require the necessary module.
+
+  ```dart
+  import 'package:flutter/cupertino.dart';
+  ```
+
+  Also for the cupertino variant the preference is to use text instead of an icon.
+
+  ```dart
+  child: const Text('Send')
+  ```
+
+- add a decoration to distinguish the body of the application — only on IOS
+
+  ```dart
+  BoxDecoration(
+    border: Border(
+      top: BorderSide(color: Colors.grey[200]!)
+    )
+  )
+  ```
