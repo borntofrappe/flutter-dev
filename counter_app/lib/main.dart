@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(const Counter());
@@ -13,7 +14,29 @@ class Counter extends StatefulWidget {
 }
 
 class _CounterState extends State<Counter> {
-  int count = 0;
+  int _counter = 0;
+
+  void _getCounter() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _counter = prefs.getInt('counter') ?? 0;
+    });
+  }
+
+  void _updateCounter(int increment) async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _counter = (prefs.getInt('counter') ?? 0) + increment;
+      prefs.setInt('counter', _counter);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _getCounter();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +66,7 @@ class _CounterState extends State<Counter> {
                       flex: 1,
                       child: Align(
                         alignment: Alignment.center,
-                        child: Text('$count',
+                        child: Text('$_counter',
                             style: const TextStyle(
                                 color: Color(0xff043875),
                                 fontFamily: 'Ubuntu',
@@ -54,45 +77,45 @@ class _CounterState extends State<Counter> {
                       textDirection: TextDirection.rtl,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Container(
-                          padding: const EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              border: Border.all(
-                                  color: Color(0xff043875), width: 3.0)),
-                          child: IconButton(
-                              focusColor: Colors.black54,
-                              iconSize: 42.0,
-                              icon: const Icon(Icons.add,
-                                  color: Color(0xff043875)),
-                              onPressed: () {
-                                setState(() {
-                                  count += 1;
-                                });
-                              },
-                              tooltip: 'Increment'),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              border: Border.all(
-                                  color: Color(0xff043875), width: 3.0)),
-                          child: IconButton(
-                            iconSize: 42.0,
-                            icon: const Icon(Icons.remove,
-                                color: Color(0xff043875)),
-                            onPressed: () {
-                              setState(() {
-                                count -= 1;
-                              });
-                            },
-                            tooltip: 'Decrement',
-                          ),
-                        )
+                        CustomIconButton(
+                            onPressed: () => _updateCounter(1),
+                            icon: Icons.add,
+                            tooltip: 'Increment'),
+                        CustomIconButton(
+                            onPressed: () => _updateCounter(-1),
+                            icon: Icons.remove,
+                            tooltip: 'Decrement'),
                       ])
                 ]),
           )),
+        ));
+  }
+}
+
+class CustomIconButton extends StatelessWidget {
+  final Function onPressed;
+  final IconData icon;
+  final String tooltip;
+
+  const CustomIconButton(
+      {Key? key,
+      required this.onPressed,
+      required this.icon,
+      required this.tooltip})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(50),
+            border: Border.all(color: const Color(0xff043875), width: 3.0)),
+        child: IconButton(
+          iconSize: 42.0,
+          icon: Icon(icon, color: const Color(0xff043875)),
+          onPressed: () => onPressed(),
+          tooltip: tooltip,
         ));
   }
 }

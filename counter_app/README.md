@@ -6,7 +6,7 @@
 
 The goal of this project is to create a similar application, focusing on the layout, appearance and persisting state.
 
-## count
+## Counter
 
 The first step is making a working counter app, without focusing much on the style and animation of the final result.
 
@@ -34,12 +34,37 @@ Text('$count'),
 
 ## Layout
 
-### Widget tree
-
 ## Design
 
 ### Custom font(s)
 
 ### Gradient
 
-## Animation
+## Persistent data
+
+```yaml
+dependencies:
+  flutter:
+
+  shared_preferences: ^2.0.13
+```
+
+```dart
+void updateCount() async {
+  final prefs = await SharedPreferences.getInstance();
+  setState(() {
+    _counter = prefs.getInt('counter') ?? 0;
+  });
+}
+```
+
+```dart
+final prefs =
+    await SharedPreferences.getInstance();
+setState(() {
+  _counter = (prefs.getInt('counter') ?? 0) + 1;
+  prefs.setInt('counter', _counter);
+});
+```
+
+https://docs.flutter.dev/cookbook/persistence/key-value
