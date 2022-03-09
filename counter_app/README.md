@@ -6,7 +6,7 @@
 
 The goal of this project is to create a similar application, focusing on the layout, appearance and persisting state.
 
-## counting
+## count
 
 The first step is making a working counter app, without focusing much on the style and animation of the final result.
 
@@ -32,12 +32,14 @@ Include the value in a `Text` widget.
 Text('$count'),
 ```
 
-<!-- ## Appearance
+## Layout
 
-- custom fonts
+### Widget tree
 
-- gradient
+## Design
+
+### Custom font(s)
+
+### Gradient
 
 ## Animation
-
-- position -->
