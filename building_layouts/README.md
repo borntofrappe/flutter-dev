@@ -1,10 +1,10 @@
-# [building_layouts](https://docs.flutter.dev/development/ui/layout/tutorial)
+# building_layouts
 
-Flutter's approach to layout, and a companion tutorial to the [layout guide](https://docs.flutter.dev/development/ui/layout).
+[The tutorial](https://docs.flutter.dev/development/ui/layout/tutorial) illustrates Flutter's approach to layout, and works as a companion to the [layout guide](https://docs.flutter.dev/development/ui/layout).
 
 ## Base code
 
-A hello world application with the following widget tree.
+Create a skeleton app with a first widget tree.
 
 ```text
 Scaffold
@@ -16,14 +16,14 @@ Scaffold
 
 ## Diagram the layout
 
+![Final layout](https://docs.flutter.dev/assets/images/docs/ui/layout/lakes.jpg)
+
 The page is divided in a column, containing an image, two rows and a block of text.
 
-The first row is subdivided in three sections with a column of text, a star icon and a number. In the column you find two lines of text. Whatsmore, the column stretches to conver the available space — hinting at an `Expanded` widget.
+The first row is divided in three sections with a column of text, a star icon and a number. In the column you find two lines of text. Whatsmore, the column stretches to conver the available space — hinting at an `Expanded` widget.
 
-The second row is divided in three sections with three columns side by side. Each column contains an icon and text.
+The second row is divided in three sections, three columns laid side by side. Each column includes an icon and text — although it is likely the elements should be buttons.
 
 The tutorial suggests a _bottom-up_ approach and to use variables and functions.
 
-## Aside
-
-Before diving in the tutorial I try to create the layout on my own.
+_Please note_: to rehearse the lessons learned with previous tutorials I tried to create the layout on my own.
