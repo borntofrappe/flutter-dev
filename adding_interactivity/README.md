@@ -20,10 +20,10 @@ Create a subclass of `StatefullWidget`.
 
 ```dart
 class FavoriteWidget extends StatefulWidget {
-  const FavoriteWidget({Key? key}) : super(key: key);
+    const FavoriteWidget({Key? key}) : super(key: key);
 
-  @override
-  _FavoriteWidgetState createState() => _FavoriteWidgetState();
+    @override
+    _FavoriteWidgetState createState() => _FavoriteWidgetState();
 }
 ```
 
@@ -122,9 +122,130 @@ setState(() {
 The last step is including the widget in the material application, specifically replacing the icon and hard-coded count value.
 
 ```diff
--Icon(Icons.star, color: Colors.red[500]),
+-Icon(Icons.star, color: Colors .red[500]),
 -const Text('41')
 +const FavoriteWidget()
 ```
 
 Notice how the application includes the subclass of the stateful widget, not the subclass of the state.
+
+## Managing state
+
+The tutorial explains three different strategies to manage state. In the `lib` folder you find the code for each strategies. Test the result from `main.dart` by referencing the classes in the `runApp` function.
+
+```dart
+void main() {
+    runApp(const ChildState());
+    // runApp(const ParentState());
+    // runApp(const MixState());
+}
+```
+
+Each demo has the same `Container` widget which changes in color as the widget is pressed. To achieve the feat the code uses a `GestureDetector` widget.
+
+Wrap the container in the specific widget.
+
+```dart
+GestureDetector(
+    child: Container()
+)
+```
+
+Add the `onTap` field to reference the function updating the state.
+
+```dart
+GestureDetector(
+    onTap: handleTap,
+)
+```
+
+_Please note:_ the actual name of the function might change in the different demos.
+
+### Child state
+
+The child widget is the stateful widget, managing the variable and the function updating its value.
+
+```dart
+class _TapBoxState extends State<TapBox> {
+    bool _active = true;
+
+    void _handleTap() {
+        setState(() {
+        _active = !_active;
+        });
+    }
+}
+```
+
+### Parent state
+
+The parent class is the stateful widget.
+
+```dart
+class _ParentStateState extends State<ParentState> {
+  bool _active = true;
+
+  void _toggleActive() {
+    setState(() {
+      _active = !_active;
+    });
+  }
+}
+```
+
+In the widget tree create the child widget passing the necessary logic.
+
+```dart
+child: TapBox(active: _active, onChanged: _toggleActive)
+```
+
+Create the child widget as a stateless widget receiving the boolean and function.
+
+```dart
+class TapBox extends StatelessWidget {
+    final bool active;
+    final Function onChanged;
+
+    const TapBox({
+        Key? key,
+        required this.active,
+        required this.onChanged
+    }) : super(key: key);
+}
+```
+
+### Mix state
+
+The parent and child class are both stateful widgets, with the goal of managing different parts of the child's state:
+
+- the parent widget manages the active/inactive state
+
+- the child widget manages the highlight state
+
+In this instance the child widget defines the variables both subclasses.
+
+In the subclass of `StatefulWidget`, to receive the values from the parent.
+
+```dart
+class TapBox extends StatefulWidget {
+    final bool active;
+    final Function onChanged;
+
+    // const TapBox(...)
+}
+```
+
+In the subclass of `State`, to define its own logic.
+
+```dart
+class _TapBoxState extends State<TapBox> {
+    bool _highlight = false;
+}
+```
+
+Notice that in this instance you access the logic inherited from the parent through the `widget` object.
+
+```diff
+-child: Text(active ? 'Active' : 'Inactive')
++child: Text(widget.active ? 'Active' : 'Inactive')
+```

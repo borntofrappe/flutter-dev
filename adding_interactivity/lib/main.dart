@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:adding_interactivity/childState.dart';
+import 'package:adding_interactivity/parentState.dart';
+import 'package:adding_interactivity/mixState.dart';
 
 void main() {
+  // runApp(const ChildState());
+  // runApp(const ParentState());
+  // runApp(const MixState());
   runApp(const App());
 }
 
