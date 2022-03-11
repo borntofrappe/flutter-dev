@@ -14,33 +14,31 @@ Create a stateful widget and a counter variable.
 
 ```dart
 class _CounterState extends State<Counter> {
-  int count = 0;
+  int _counter = 0;
 }
 ```
 
 Update the variable through `setState`.
 
 ```dart
-setState(() {
-    count += 1;
-});
+void _updateCounter(int increment) {
+  setState(() {
+      _counter += increment;
+  });
+}
 ```
 
 Include the value in a `Text` widget.
 
 ```dart
-Text('$count'),
+Text('$_counter'),
 ```
 
-## Layout
-
-## Design
-
-### Custom font(s)
-
-### Gradient
-
 ## Persistent data
+
+Using `shared_references` store the value of the counter locally with a key-value pair.
+
+Install the module.
 
 ```yaml
 dependencies:
@@ -49,8 +47,21 @@ dependencies:
   shared_preferences: ^2.0.13
 ```
 
+When initializing the stateful widget call a function to retrieve the existing value — if existing.
+
 ```dart
-void updateCount() async {
+@override
+  void initState() {
+  super.initState();
+
+  _getCounter();
+}
+```
+
+Define the function to retrieve the key and provide a default value of zero.
+
+```dart
+void _getCounter() async {
   final prefs = await SharedPreferences.getInstance();
   setState(() {
     _counter = prefs.getInt('counter') ?? 0;
@@ -58,13 +69,30 @@ void updateCount() async {
 }
 ```
 
+When updating the counter variable increment the value directly from shared preferences.
+
 ```dart
-final prefs =
-    await SharedPreferences.getInstance();
-setState(() {
-  _counter = (prefs.getInt('counter') ?? 0) + 1;
-  prefs.setInt('counter', _counter);
-});
+void _updateCounter(int increment) {
+  final prefs = await SharedPreferences.getInstance();
+  setState(() {
+    _counter = (prefs.getInt('counter') ?? 0) + increment;
+    prefs.setInt('counter', _counter);
+  });
+}
 ```
 
-https://docs.flutter.dev/cookbook/persistence/key-value
+## Layout
+
+```text
+Column
+  Text
+  Expanded
+    ConstrainedBox
+      FittedBox
+        Text
+  Row
+    Container
+      IconButton
+    Container
+      IconButton
+```
