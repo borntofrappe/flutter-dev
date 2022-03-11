@@ -4,8 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:counter_app/digitsWheel.dart';
 
 void main() {
-  // runApp(const DigitsWheel());
-  runApp(const Counter());
+  runApp(const DigitsWheel());
+  // runApp(const Counter());
 }
 
 class Counter extends StatefulWidget {
