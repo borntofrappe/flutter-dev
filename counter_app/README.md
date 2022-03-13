@@ -122,3 +122,7 @@ Manage the scrolling with controllers instead of the physics attached to the wid
 Create a list of FixedExtentScrollController instances, initialize them in the init lifecycle method, dispose of them in the corresponding function
 
 Attach the controller to the wheel. At the click of a button update an arbitrary wheel.
+
+### Counting up
+
+Update the counter from the unit to the tens to the hundreds.
