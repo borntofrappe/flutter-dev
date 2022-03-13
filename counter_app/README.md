@@ -114,3 +114,11 @@ Useful properties for the delegating widget:
 - constroller
 
 itemExtent and childDelegate are the only two strictly necessary
+
+### Controllers
+
+Manage the scrolling with controllers instead of the physics attached to the widget.
+
+Create a list of FixedExtentScrollController instances, initialize them in the init lifecycle method, dispose of them in the corresponding function
+
+Attach the controller to the wheel. At the click of a button update an arbitrary wheel.
