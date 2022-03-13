@@ -96,3 +96,21 @@ Column
     Container
       IconButton
 ```
+
+---
+
+With increments:
+
+### Wheels
+
+Use a ListWheelScrollView widget to create a wheel. Use ListWheelScrollView.useDelegate to dynamically generate x number of rows. Use ListWheelChildLoopingListDelegate to create a closed wheel
+
+Useful properties for the delegating widget:
+
+- perspective
+- diameterRatio
+- overAndUnderCenterOpacity
+- physics
+- constroller
+
+itemExtent and childDelegate are the only two strictly necessary
