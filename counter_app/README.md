@@ -130,3 +130,7 @@ Update the counter from the unit to the tens to the hundreds.
 ### Counting up and down
 
 Consider both directions.
+
+### Initial count
+
+Initialize the wheels with the input count.
