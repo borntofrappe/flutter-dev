@@ -1,8 +1,8 @@
 # counter_app
 
-[flutter.dev/learn](https://flutter.dev/learn) introduces the development kit with a series of images, among which you find a prompt to create a flutter application and create a counter application.
+[flutter.dev/learn](https://flutter.dev/learn) introduces the development kit with a series of images, among which you a picture depicting a counter application.
 
-The goal of this project is to immediately recreate the layout, but then try and develop a more elaborate application in which the numbers scroll vertically.
+The goal of this project is to recreate the application focusing on the feature and the overall design.
 
 ## Counter
 
@@ -136,20 +136,86 @@ instance.setInt('counter', _counter);
 
 ## Design
 
-The goal is to mirror the design provided on flutter.dev/learn.
-
 ![Counter app](https://storage.googleapis.com/cms-storage-bucket/740d82517a6f13db51bd.png)
 
 ### Layout
 
-Describe the widget tree.
+The application begins with a `MaterialApp` and `Scaffold` widgets. From this starting point wrap the content in a `SafeArea` to push the child below the space of the status bar.
+
+Wrap `SafeArea` in a `Container` to include the gradient — explained in the next section.
+
+Past `Padding` widgets to separate the content from the surrounding elements create the following widget tree.
+
+```text
+Column
+  Text
+  Expanded
+    Center
+      Text
+  Row
+    IconButton
+    IconButton
+```
+
+Wrap the row in a `ConstrainedBox` widget to avoid having the buttons too further apart on larger screens.
+
+Additionally, wrap each button in a `Container` widget to include the rounded border — explained in the next section.
 
 ### Style
 
-Describe:
+Add a custom font through the yaml configuration file.
 
-- color
+```yaml
+fonts:
+  - family: Ubuntu
+    fonts:
+      - asset: fonts/Ubuntu-Bold.ttf
+```
 
-- gradient
+Reference the family by the specified string.
 
-- rounded borders
+```dart
+TextStyle(
+  fontFamily: 'Ubuntu'
+)
+```
+
+In terms of color specify a particular hex value with the `0xff` prefix. `0x` works to describe hexadecimal notation, `ff` describes the opacity.
+
+```dart
+Color color = const Color(0xff043875);
+```
+
+For the gradient use the `LinearGradient` widget, specifying the hex colors in the appropriate field.
+
+```dart
+LinearGradient(
+      colors: [Color(0xffc6bafa), Color(0xffefbad7)],
+)
+```
+
+Use additional fields to customize the gradient as a matter of preference.
+
+Include the widget in a `BoxDecoration` and in the `decoration` property of a generic `Container`.
+
+```dart
+decoration: BoxDecoration(
+  gradient: LinearGradient
+)
+```
+
+Rounded borders follow a similar pattern. Add a `Container`, a `decoration` field and a `BoxDecoration` widget. In this instance, however, point to the border property instead of the gradient.
+
+```dart
+decoration: BoxDecoration(
+  border: Border.all(color: color, width: 4.0)
+)
+```
+
+For rounded corners add an additional widget as `borderRadius`.
+
+```dart
+BoxDecoration(
+  borderRadius: BorderRadius.circular(50)
+)
+```
