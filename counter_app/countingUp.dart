@@ -6,19 +6,19 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Controllers(),
+      home: CountingUp(),
     );
   }
 }
 
-class Controllers extends StatefulWidget {
-  const Controllers({Key? key}) : super(key: key);
+class CountingUp extends StatefulWidget {
+  const CountingUp({Key? key}) : super(key: key);
 
   @override
-  State<Controllers> createState() => _ControllersState();
+  State<CountingUp> createState() => _CountingUpState();
 }
 
-class _ControllersState extends State<Controllers> {
+class _CountingUpState extends State<CountingUp> {
   final int _columns = 3;
   final int _rows = 10;
 

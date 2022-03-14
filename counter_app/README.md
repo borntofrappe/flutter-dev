@@ -126,3 +126,7 @@ Attach the controller to the wheel. At the click of a button update an arbitrary
 ### Counting up
 
 Update the counter from the unit to the tens to the hundreds.
+
+### Counting up and down
+
+Consider both directions.
