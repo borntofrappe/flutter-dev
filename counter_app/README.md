@@ -134,3 +134,15 @@ Consider both directions.
 ### Initial count
 
 Initialize the wheels with the input count.
+
+The change is immediate, but could be animated.
+
+### Reverse order
+
+List numbers in the opposite order, allowing to increment the counting moving numbers down instead of up.
+
+One way to achieve the solution is by assigning the reverse order to the text.
+
+With this information, however, you need to account for the reverse scrolling and indexing.
+
+_Please note_: the version also fixes the way the script manages "the way back". This is achieved by locking the index of the wheels in the [0, rows * 2] range.
