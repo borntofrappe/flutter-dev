@@ -15,8 +15,16 @@ class Ticker extends StatefulWidget {
 
 class _TickerState extends State<Ticker> {
   final FixedExtentScrollController _controller = FixedExtentScrollController();
+  final _children = List<Widget>.generate(digits + 1,
+      (index) => FittedBox(child: Text((index % digits).toString())));
 
   void _scroll(int direction) {
+    if (direction == -1 && _controller.selectedItem == 0) {
+      _controller.jumpToItem(digits);
+    } else if (direction == 1 && _controller.selectedItem == digits) {
+      _controller.jumpToItem(0);
+    }
+
     _controller.animateToItem(_controller.selectedItem + 1 * direction,
         duration: const Duration(milliseconds: 250),
         curve: Curves.easeInOutSine);
@@ -38,13 +46,12 @@ class _TickerState extends State<Ticker> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
-              child: ListWheelScrollView(
-                  controller: _controller,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemExtent: 200.0,
-                  children: List<Widget>.generate(
-                      digits, (index) => FittedBox(child: Text(('$index'))))),
-            ),
+                child: ListWheelScrollView(
+                    overAndUnderCenterOpacity: 1.0, // SET TO 0.0
+                    controller: _controller,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemExtent: 200.0,
+                    children: _children)),
             ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 480.0),
               child: Row(

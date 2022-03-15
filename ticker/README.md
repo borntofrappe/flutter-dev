@@ -88,15 +88,50 @@ _controller.animateToItem(
 );
 ```
 
-## List wheel properties
+## Infinite scroll
 
-Hide numbers except the one displayed in the center with `overAndUnderCenterOpacity`.
+Connected to the list wheel widget you find `ListWheelScrollView.useDelegate` to generate the children programmatically. In the required `childDelegate` field you can use the `ListWheelChildLoopingListDelegate` widget to create an closed wheel, or rather a repeating wheel with the input digits.
+
+```dart
+ListWheelScrollView.useDelegate(
+    childDelegate: ListWheelChildLoopingListDelegate(
+        children: _children
+    )
+)
+```
+
+Ultimately, however, I chose not to pursue the looping route. This is more as a matter of preference in terms of the values assumed by the controller in `_controller.selectedItem`, which I'd rather keep in a given range instead of extending to large positive _or_ negative numbers.
+
+Keeping the existing `ListWheelScrollView` widget create a list with one more number than necessary.
+
+```diff
+ List<Widget>.generate(digits, )
++List<Widget>.generate(digits + 1,)
+```
+
+Remove the excess in the text widget.
+
+```dart
+Text((index % digits).toString())
+```
+
+In the scrolling function directly update the current item directly in the two instances when the selected item falls outside of the list.
+
+```dart
+if(direction == -1 && _controller.selectedItem == 0) {
+    _controller.jumpToItem(digits);
+} else if(direction == 1 && _controller.selectedItem == digits) {
+    _controller.jumpToItem(0);
+}
+```
+
+The illusion works since you jump to the item before you animate the wheel and ultimately hide all numbers except the one displayed in the center with `overAndUnderCenterOpacity`.
 
 ```dart
 overAndUnderCenterOpacity: 0.0,
 ```
 
-Customize the wheel further with `perspective` and `diameterRatio`.
+---
 
 ## Going further
 
