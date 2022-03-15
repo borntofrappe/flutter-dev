@@ -5,6 +5,7 @@ void main() {
 }
 
 const digits = 10;
+const columns = 3;
 
 class Ticker extends StatefulWidget {
   const Ticker({Key? key}) : super(key: key);
@@ -14,18 +15,21 @@ class Ticker extends StatefulWidget {
 }
 
 class _TickerState extends State<Ticker> {
-  final FixedExtentScrollController _controller = FixedExtentScrollController();
-  final _children = List<Widget>.generate(digits + 1,
-      (index) => FittedBox(child: Text((index % digits).toString())));
+  final List<FixedExtentScrollController> _controllers =
+      List<FixedExtentScrollController>.generate(
+          columns, (_) => FixedExtentScrollController());
 
   void _scroll(int direction) {
-    if (direction == -1 && _controller.selectedItem == 0) {
-      _controller.jumpToItem(digits);
-    } else if (direction == 1 && _controller.selectedItem == digits) {
-      _controller.jumpToItem(0);
+    if (direction == -1 &&
+        _controllers[_controllers.length - 1].selectedItem == 0) {
+      _controllers[_controllers.length - 1].jumpToItem(digits);
+    } else if (direction == 1 &&
+        _controllers[_controllers.length - 1].selectedItem == digits) {
+      _controllers[_controllers.length - 1].jumpToItem(0);
     }
 
-    _controller.animateToItem(_controller.selectedItem + 1 * direction,
+    _controllers[_controllers.length - 1].animateToItem(
+        _controllers[_controllers.length - 1].selectedItem + 1 * direction,
         duration: const Duration(milliseconds: 250),
         curve: Curves.easeInOutSine);
   }
@@ -34,7 +38,9 @@ class _TickerState extends State<Ticker> {
   void dispose() {
     super.dispose();
 
-    _controller.dispose();
+    for (FixedExtentScrollController _controller in _controllers) {
+      _controller.dispose();
+    }
   }
 
   @override
@@ -46,12 +52,22 @@ class _TickerState extends State<Ticker> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
-                child: ListWheelScrollView(
-                    overAndUnderCenterOpacity: 1.0, // SET TO 0.0
-                    controller: _controller,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemExtent: 200.0,
-                    children: _children)),
+                child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: _controllers
+                        .map((_controller) => Expanded(
+                              child: ListWheelScrollView(
+                                  overAndUnderCenterOpacity: 1.0, // SET TO 0.0
+                                  controller: _controller,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemExtent: 200.0,
+                                  children: List<Widget>.generate(
+                                      digits + 1,
+                                      (index) => FittedBox(
+                                          child: Text(
+                                              (index % digits).toString())))),
+                            ))
+                        .toList())),
             ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 480.0),
               child: Row(

@@ -131,6 +131,62 @@ The illusion works since you jump to the item before you animate the wheel and u
 overAndUnderCenterOpacity: 0.0,
 ```
 
+## Multiple wheels
+
+The idea is to ultimately implement a counting feature with exceed the unit column.
+
+Define the number of columns — at first with a constant.
+
+```dart
+const columns = 3;
+```
+
+In the stateful widget create a list of controllers instead of a single instance of `FixedExtentScrollController`.
+
+```dart
+final List<FixedExtentScrollController> _controllers =
+      List<FixedExtentScrollController>.generate(
+          columns, (_) => FixedExtentScrollController());
+```
+
+Dispose of all controllers in the matching lifecycle method.
+
+```dart
+for (FixedExtentScrollController _controller in _controllers) {
+    _controller.dispose();
+}
+```
+
+In the widget tree loop through the controllers to add one wheel for each column. In terms of widget tree add `ListWheelScrollView` in an `Expanded` widget. Wrap the expanded widgets in a row to have the wheels side by side.
+
+```text
+Row
+    Expanded
+        ListWheelScrollView
+    Expanded
+        ListWheelScrollView
+```
+
+In the `controller` field add the respective controller, from the looping function.
+
+```dart
+_controllers.map(
+    (_controller) => Expanded(
+        child: ListWheelScrollView(
+            controller: _controller,
+        )
+    )
+).toList()
+```
+
+In the `children` field generate a list for each wheel instead of relying on the one created ahead of time.
+
+```dart
+children: List<Widget>.generate(digits + 1,)
+```
+
+Using a single list does not seem to cause issues, at least with a cursory look, but it is reasonable to create a set for each separate wheel.
+
 ---
 
 ## Going further
