@@ -252,6 +252,66 @@ As a matter of preference the application counts numbers by having larger values
 
 3.  reconsider the condition in the `while` statement since the order of the numbers is flipped
 
+## Initial count
+
+In the moment the application stores the count value locally — see the next section — it is helpful to have the stateful widget receive a value for the initial count.
+
+```dart
+Ticker(count: 109)
+```
+
+As a matter of preference initialize the variable to have the argument optional.
+
+```dart
+class Ticker extends StatefulWidget {
+  final int count;
+  const Ticker({Key? key, this.count = 0}) : super(key: key);
+}
+```
+
+In the subclass of state update the columns through the controllers. Since the logic relies on the `ListWheelScrollView` widgets actually existing include the instructions in the `initState` lifecycle _and_ a function run as the widget is built.
+
+```dart
+@override
+void initState() {
+super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+        // update controllers
+    });
+}
+```
+
+Note that the order of the numbers in the lists is reversed, so you need to map the individual digits to the corresponding index.
+
+Once you extract the number for each column in a variable `digit`:
+
+- update the controllers to jump at the bottom of the wheel.
+
+  ```dart
+  _controllers[index].jumpToItem(digits);
+  ```
+
+- animate the controllers back to the correct item.
+
+  ```dart
+  _controllers[index].animateToItem(
+      digits - digit,
+      // ...
+  )
+  ```
+
+<!-- ## Persisting state
+
+- material app, scaffold, ticker
+
+## Final touches
+
+- design
+
+- delay initial count?
+
+- 0 opacity -->
+
 ---
 
 ## Going further

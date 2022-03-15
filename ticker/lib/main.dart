@@ -8,7 +8,8 @@ const digits = 10;
 const columns = 3;
 
 class Ticker extends StatefulWidget {
-  const Ticker({Key? key}) : super(key: key);
+  final int count;
+  const Ticker({Key? key, this.count = 0}) : super(key: key);
 
   @override
   State<Ticker> createState() => _TickerState();
@@ -37,6 +38,27 @@ class _TickerState extends State<Ticker> {
     } while (index > 0 &&
         ((direction == -1 && _controllers[index].selectedItem == 1) ||
             (direction == 1 && _controllers[index].selectedItem == 0)));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      int count = widget.count;
+      int index = _controllers.length - 1;
+      while (index >= 0) {
+        int digit = count % 10;
+        _controllers[index].jumpToItem(digits);
+
+        _controllers[index].animateToItem(digits - digit,
+            duration: Duration(milliseconds: 250 * digit),
+            curve: Curves.easeInOutSine);
+
+        count = count ~/ 10;
+        index -= 1;
+      }
+    });
   }
 
   @override
