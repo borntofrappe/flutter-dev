@@ -1,6 +1,6 @@
 # adding_interactivity
 
-[The tutorial](https://docs.flutter.dev/development/ui/interactive) follows on the footsteps of [building_layouts](), a project devoted to creating the layout after a given screenshot. To this end `main.dart` is copy-pasted from the cited directory. The project also includes `lake.jpg` in the `images` folder.
+[The tutorial](https://docs.flutter.dev/development/ui/interactive) follows on the footsteps of [building layouts](https://docs.flutter.dev/development/ui/layout/tutorial), a separate tutorial devoted to creating the layout after a given screenshot. To this end `main.dart` is copy-pasted from the cited directory. The project also includes `lake.jpg` in the `images` folder.
 
 The idea is to have the application interactive in the form of a custom widget for the number of times the page has been favorited. Tap the star icon to add or remove the location from the favorites, and in so doing modify the appearance of the icon and the accompanying counter.
 

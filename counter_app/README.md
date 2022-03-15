@@ -2,6 +2,8 @@
 
 [flutter.dev/learn](https://flutter.dev/learn) introduces the development kit with a series of images, among which you a picture depicting a counter application.
 
+![Counter app](https://storage.googleapis.com/cms-storage-bucket/740d82517a6f13db51bd.png)
+
 The goal of this project is to recreate the application focusing on the feature and the overall design.
 
 ## Counter
@@ -135,8 +137,6 @@ instance.setInt('counter', _counter);
 ```
 
 ## Design
-
-![Counter app](https://storage.googleapis.com/cms-storage-bucket/740d82517a6f13db51bd.png)
 
 ### Layout
 

@@ -1,8 +1,6 @@
 # friendly_chat
 
-[Building beautiful UIs with Flutter](https://codelabs.developers.google.com/codelabs/flutter)
-
-The goal is to build a chat application where the user is able to send a message and immediately see the text above the text input.
+Following the codelab [_Building beautiful UIs with Flutter_](https://codelabs.developers.google.com/codelabs/flutter) the goal is to build a chat application where the user is able to send a message and immediately see the text above the text input.
 
 In terms of interface the application is designed with a series of widgets and customized to fit the operating system.
 
