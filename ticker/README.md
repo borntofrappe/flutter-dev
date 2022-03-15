@@ -10,13 +10,85 @@ Use `ListWheelScrollView` to show digits in the [0-9] range one above the other.
 List<Widget>.generate(digits, (index) => FittedBox(child: Text(('$index'))))
 ```
 
-## List wheel properties
+## Control
 
-Disable physics-based scrolling with `physics`.
+The goal is to ultimately handle the scrolling through two buttons instead of the wheel.
+
+Disable the wheel's scrolling with `physics`.
 
 ```dart
-physics: const NeverScrollableScrollPhysics(),
+ListWheelScrollView(
+    physics: const NeverScrollableScrollPhysics(),
+)
 ```
+
+Make the widget into a stateful widget to manage state.
+
+```dart
+class Ticker extends StatefulWidget {
+}
+class _TickerState extends State<Ticker> {
+}
+```
+
+Define a controller in the subclass of state.
+
+```dart
+final FixedExtentScrollController _controller = FixedExtentScrollController();
+```
+
+Dispose of the resources allocated to the controller through the lifecycle method.
+
+```dart
+@override
+void dispose() {
+  super.dispose();
+
+  _controller.dispose();
+}
+```
+
+Include the controller in the wheel.
+
+```dart
+ListWheelScrollView(
+    controller: _controller,
+)
+```
+
+Include two buttons to scroll up and down. With `onPressed` invoke a separate function.
+
+```dart
+onPressed: () => _scroll(-1),
+onPressed: () => _scroll(1),
+```
+
+Define `_scroll` to update the wheel through the controller.
+
+```dart
+void _scroll(int direction) {
+}
+```
+
+Retrieve the current value with `_controller.selectedItem` and change it according to the input direction.
+
+```dart
+void _scroll(int direction) {
+_controller.animateToItem(_controller.selectedItem + 1 * direction,
+}
+```
+
+Add the required duration and curve.
+
+```dart
+_controller.animateToItem(
+    VALUE,
+    duration: const Duration(milliseconds: 250),
+    curve: Curves.easeInOutSine
+);
+```
+
+## List wheel properties
 
 Hide numbers except the one displayed in the center with `overAndUnderCenterOpacity`.
 
