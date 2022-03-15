@@ -233,6 +233,25 @@ while (
 
 In the body of the repeating block log the selected item to double check the value.
 
+## Scroll order
+
+As a matter of preference the application counts numbers by having larger values above smaller ones. One way to achieve the feat is to:
+
+1.  reverse the list of widget describing the numbers
+
+    ```dart
+    List<Widget>.generate().reversed.toList()
+    ```
+
+2.  update the buttons to scroll the numbers in the new direction
+
+    ```dart
+    onPressed: () => _scroll(1) // remove
+    onPressed: () => _scroll(-1) // add
+    ```
+
+3.  reconsider the condition in the `while` statement since the order of the numbers is flipped
+
 ---
 
 ## Going further

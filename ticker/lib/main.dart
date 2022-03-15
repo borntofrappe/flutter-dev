@@ -35,8 +35,8 @@ class _TickerState extends State<Ticker> {
           duration: const Duration(milliseconds: 250),
           curve: Curves.easeInOutSine);
     } while (index > 0 &&
-        ((direction == 1 && _controllers[index].selectedItem == digits - 1) ||
-            (direction == -1 && _controllers[index].selectedItem == digits)));
+        ((direction == -1 && _controllers[index].selectedItem == 1) ||
+            (direction == 1 && _controllers[index].selectedItem == 0)));
   }
 
   @override
@@ -67,10 +67,12 @@ class _TickerState extends State<Ticker> {
                                   physics: const NeverScrollableScrollPhysics(),
                                   itemExtent: 200.0,
                                   children: List<Widget>.generate(
-                                      digits + 1,
-                                      (index) => FittedBox(
-                                          child: Text(
-                                              (index % digits).toString())))),
+                                          digits + 1,
+                                          (index) => FittedBox(
+                                              child: Text(
+                                                  (index % digits).toString())))
+                                      .reversed
+                                      .toList()),
                             ))
                         .toList())),
             ConstrainedBox(
@@ -81,12 +83,12 @@ class _TickerState extends State<Ticker> {
                   IconButton(
                     iconSize: 48.0,
                     icon: const Icon(Icons.remove),
-                    onPressed: () => _scroll(-1),
+                    onPressed: () => _scroll(1),
                   ),
                   IconButton(
                     iconSize: 48.0,
                     icon: const Icon(Icons.add),
-                    onPressed: () => _scroll(1),
+                    onPressed: () => _scroll(-1),
                   )
                 ],
               ),
