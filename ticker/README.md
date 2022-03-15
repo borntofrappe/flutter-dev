@@ -187,6 +187,52 @@ children: List<Widget>.generate(digits + 1,)
 
 Using a single list does not seem to cause issues, at least with a cursory look, but it is reasonable to create a set for each separate wheel.
 
+## Update counter
+
+With multiple columns you need to consider when a digit exceeds the [0-9] range, in either direction.
+
+The idea is to update the `scroll` function to immediately modify the last column, then move backwards if necessary.
+
+Initialize a counter variable to start at the end of the controllers' list.
+
+```dart
+int index = _controllers.length;
+```
+
+In a `do..while` loop decrement the counter variable — which explains why the initial value is actually off by one.
+
+```dart
+do {
+    index -= 1;
+
+} while(index > 0)
+```
+
+If you were to modify all columns you'd execute the previous logic for every single controller.
+
+```dart
+do {
+    index -= 1;
+    // _controllers[index]
+
+} while(index > 0)
+```
+
+To consider only the [0-9] extremes, update the `while` condition considering the selected item and direction.
+
+```dart
+while (
+    index > 0 &&
+    (
+    (direction == 1 && _controllers[index].selectedItem == digits - 1)
+    ||
+    (direction == -1 && _controllers[index].selectedItem == digits)
+    )
+)
+```
+
+In the body of the repeating block log the selected item to double check the value.
+
 ---
 
 ## Going further

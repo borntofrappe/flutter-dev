@@ -20,18 +20,23 @@ class _TickerState extends State<Ticker> {
           columns, (_) => FixedExtentScrollController());
 
   void _scroll(int direction) {
-    if (direction == -1 &&
-        _controllers[_controllers.length - 1].selectedItem == 0) {
-      _controllers[_controllers.length - 1].jumpToItem(digits);
-    } else if (direction == 1 &&
-        _controllers[_controllers.length - 1].selectedItem == digits) {
-      _controllers[_controllers.length - 1].jumpToItem(0);
-    }
+    int index = _controllers.length;
+    do {
+      index -= 1;
 
-    _controllers[_controllers.length - 1].animateToItem(
-        _controllers[_controllers.length - 1].selectedItem + 1 * direction,
-        duration: const Duration(milliseconds: 250),
-        curve: Curves.easeInOutSine);
+      if (direction == -1 && _controllers[index].selectedItem == 0) {
+        _controllers[index].jumpToItem(digits);
+      } else if (direction == 1 && _controllers[index].selectedItem == digits) {
+        _controllers[index].jumpToItem(0);
+      }
+
+      _controllers[index].animateToItem(
+          _controllers[index].selectedItem + 1 * direction,
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeInOutSine);
+    } while (index > 0 &&
+        ((direction == 1 && _controllers[index].selectedItem == digits - 1) ||
+            (direction == -1 && _controllers[index].selectedItem == digits)));
   }
 
   @override
