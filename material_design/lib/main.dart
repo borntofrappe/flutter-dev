@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:material_design/login.dart';
+import 'package:material_design/app.dart';
 
 void main() {
-  runApp(const MaterialApp(title: 'Shrine', home: LoginPage()));
+  runApp(const ShrineApp());
 }
