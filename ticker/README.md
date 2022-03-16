@@ -300,17 +300,177 @@ Once you extract the number for each column in a variable `digit`:
   )
   ```
 
-<!-- ## Persisting state
+## App structure
 
-- material app, scaffold, ticker
+Before considering how to persist data as the app is closed — see to the next section — it is helpful to restructure the application.
+
+Have the `main` function invoke `MyApp`, a stateful widget. Stateful since the widget will handle the logic for the initial count.
+
+```dart
+void main() {
+  runApp(const MyApp());
+}
+```
+
+Use `MyApp` to return an instance of `MaterialApp`, the `Scaffold` widget and eventually `Ticker`.
+
+```text
+MaterialApp
+    Scaffold
+        Ticker
+```
+
+With `Ticker` preserve the controller logic, but modify the `build` function to return the `Column` widget and anything which follows.
+
+## Persisting state
+
+Add `shared_preferences` to the config file.
+
+```yaml
+dependencies:
+  flutter:
+
+  shared_preferences: ^2.0.13
+```
+
+Import the dependency in `main.dart`.
+
+```dart
+import 'package:shared_preferences/shared_preferences.dart';
+```
+
+### Retrieve data
+
+In the stateful widget `MyApp` initialize a variable for the initial count.
+
+```dart
+int _count = 0;
+```
+
+In the body of the `initState` function call a function to update the variable.
+
+```dart
+@override
+void initState() {
+  super.initState();
+
+  _getCount();
+}
+```
+
+Update the count through an instance of `SharedPreferences`.
+
+```dart
+void _getCount() async {
+  final instance = await SharedPreferences.getInstance();
+  setState(() {
+    _count = instance.getInt('count') ?? 0;
+  });
+}
+```
+
+Send the value to the `Ticker` widget.
+
+```dart
+Ticker(count: _count)
+```
+
+### Scroll to count
+
+In previous versions `Ticker` was able to set the initial count through `initState`, but using the value from the parent widget would not work to show the saved number.
+
+```dart
+@override
+void initState() {
+    super.initState();
+
+    _scrollToCount(widget.count);
+}
+```
+
+This is because `initState` is called once, as the widget is created, and with a value of `0`. Eventually `widget.count` is updated, but the lifecycle method is not repeat.
+
+To this end you need to consider the number in the `build` function.
+
+```dart
+@override
+Widget build(BuildContext context) {
+    _scrollToCount(widget.count);
+}
+```
+
+### Save data
+
+In the stateful widget `MyApp` define a function to save an input number with shared preferences.
+
+```dart
+void _setCount(int count) async {
+  final instance = await SharedPreferences.getInstance();
+  instance.setInt('count', count);
+}
+```
+
+Send the function to the `Ticker` widget alongside the counter variable.
+
+```dart
+Ticker(
+    count: _count,
+    onChange: _setCount
+)
+```
+
+Update the widget to set the function among its properties.
+
+```dart
+class Ticker extends StatefulWidget {
+    final Function onChange;
+    const Ticker({
+        required this.onChange
+        // ..
+    });
+}
+```
+
+It is reasonable to save the data as one of the buttons is pressed and the digits scroll. In the `_scroll` function use a `Future` to wait for the animation to end.
+
+```dart
+Future.delayed(const Duration(milliseconds: 250), () {
+});
+```
+
+Compute the `count` looping through the controllers and adding up the unit, ten, hundred columns.
+
+```dart
+int count = 0;
+for (int i = 0; i < _controllers.length; i++) {
+    count += ((digits - _controllers[i].selectedItem) % digits) *
+        pow(10, _controllers.length - i - 1).toInt();
+}
+```
+
+You need to import the math library to use from the `pow` function.
+
+```dart
+import 'dart:math';
+```
+
+Call the function received as argument with the computed count.
+
+```dart
+widget.onChange(count);
+```
+
+<!--
 
 ## Final touches
 
-- design
+- design, custom font, colors, padding and constrained boxes
 
-- delay initial count?
+- stagger animation
 
-- 0 opacity -->
+- 0 opacity
+
+-->
 
 ---
 
