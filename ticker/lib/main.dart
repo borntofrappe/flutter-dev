@@ -71,6 +71,9 @@ class _TickerState extends State<Ticker> {
     widget.onChange(count);
   }
 
+  final int _animationDuration = 200;
+  final Curve _animationCurve = Curves.fastOutSlowIn;
+
   void _scroll(int direction) {
     int index = _controllers.length;
     do {
@@ -84,27 +87,35 @@ class _TickerState extends State<Ticker> {
 
       _controllers[index].animateToItem(
           _controllers[index].selectedItem + 1 * direction,
-          duration: const Duration(milliseconds: 250),
-          curve: Curves.easeInOutSine);
+          duration: Duration(milliseconds: _animationDuration),
+          curve: _animationCurve);
     } while (index > 0 &&
         ((direction == -1 && _controllers[index].selectedItem == 1) ||
             (direction == 1 && _controllers[index].selectedItem == 0)));
 
-    Future.delayed(const Duration(milliseconds: 250), () {
+    Future.delayed(Duration(milliseconds: _animationDuration), () {
       _save();
     });
   }
 
   void _scrollToCount(count) {
     int index = _controllers.length - 1;
+    int previousDigits = 0;
+
     while (index >= 0) {
       int digit = count % 10;
-      _controllers[index].jumpToItem(digits);
 
-      _controllers[index].animateToItem(digits - digit,
-          duration: Duration(milliseconds: 250 * digit),
-          curve: Curves.easeInOutSine);
+      FixedExtentScrollController _controller = _controllers[index];
+      _controller.jumpToItem(digits);
 
+      Future.delayed(
+          Duration(milliseconds: _animationDuration * previousDigits), () {
+        _controller.animateToItem(digits - digit,
+            duration: Duration(milliseconds: _animationDuration * digit),
+            curve: _animationCurve);
+      });
+
+      previousDigits += max(digit - 1, 0);
       count = count ~/ 10;
       index -= 1;
     }
@@ -119,51 +130,75 @@ class _TickerState extends State<Ticker> {
     }
   }
 
+  final TextStyle _textStyle =
+      const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF272F43));
+
+  final ButtonStyle _buttonStyle = ElevatedButton.styleFrom(
+      elevation: 8.0,
+      fixedSize: const Size(78.0, 78.0),
+      primary: const Color(0xff121a2f),
+      shape: const CircleBorder());
+
+  final Color _colorIcon = const Color(0xffdfe4f7);
+  final double _sizeIcon = 38.0;
+
   @override
   Widget build(BuildContext context) {
     _scrollToCount(widget.count);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Expanded(
-            child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: _controllers
-                    .map((_controller) => Expanded(
-                          child: ListWheelScrollView(
-                              overAndUnderCenterOpacity: 1.0, // SET TO 0.0
-                              controller: _controller,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemExtent: 200.0,
-                              children: List<Widget>.generate(
-                                      digits + 1,
-                                      (index) => FittedBox(
-                                          child: Text(
-                                              (index % digits).toString())))
-                                  .reversed
-                                  .toList()),
-                        ))
-                    .toList())),
-        ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 480.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              IconButton(
-                iconSize: 48.0,
-                icon: const Icon(Icons.remove),
-                onPressed: () => _scroll(1),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+              flex: 3,
+              child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: _controllers
+                      .map((_controller) => Expanded(
+                            child: ListWheelScrollView(
+                                overAndUnderCenterOpacity: 0.0,
+                                controller: _controller,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemExtent: 300.0,
+                                children: List<Widget>.generate(
+                                        digits + 1,
+                                        (index) => FittedBox(
+                                            child: Text(
+                                                (index % digits).toString(),
+                                                style: _textStyle)))
+                                    .reversed
+                                    .toList()),
+                          ))
+                      .toList())),
+          Expanded(
+            flex: 1,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 480.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                      child: Icon(Icons.remove,
+                          semanticLabel: 'Count down',
+                          size: _sizeIcon,
+                          color: _colorIcon),
+                      onPressed: () => _scroll(1),
+                      style: _buttonStyle),
+                  ElevatedButton(
+                      child: Icon(Icons.add,
+                          semanticLabel: 'Count up',
+                          size: _sizeIcon,
+                          color: _colorIcon),
+                      onPressed: () => _scroll(-1),
+                      style: _buttonStyle),
+                ],
               ),
-              IconButton(
-                iconSize: 48.0,
-                icon: const Icon(Icons.add),
-                onPressed: () => _scroll(-1),
-              )
-            ],
-          ),
-        )
-      ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }

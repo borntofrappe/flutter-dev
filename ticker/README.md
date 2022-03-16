@@ -460,19 +460,18 @@ Call the function received as argument with the computed count.
 widget.onChange(count);
 ```
 
-<!--
-
 ## Final touches
 
-- design, custom font, colors, padding and constrained boxes
+Finally set the opacity to hide the digits except the relevant ones.
 
-- stagger animation
+```diff
+-overAndUnderCenterOpacity: 1.0,
++overAndUnderCenterOpacity: 0.0,
+```
 
-- 0 opacity
+As a matter of preference update the widget tree to add padding, divide the space between the two section and change the default colors.
 
--->
-
----
+Also as a matter of preference stagger the animation for the initial count to have successive columns animated in sequence and with a snappier timing function.
 
 ## Going further
 
