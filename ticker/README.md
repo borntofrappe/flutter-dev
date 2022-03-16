@@ -1,5 +1,7 @@
 # ticker
 
+![](https://github.com/borntofrappe/flutter-dev/blob/master/ticker/ticker.jpg)
+
 [counter_app](https://github.com/borntofrappe/flutter-dev/tree/master/counter_app) creates a counter application focusing on a given layout. The goal of this project is to approach the feature with a different perspective, focusing on the animation of the digits as the count is updated.
 
 ## ListWheelScrollView
@@ -469,7 +471,7 @@ Finally set the opacity to hide the digits except the relevant ones.
 +overAndUnderCenterOpacity: 0.0,
 ```
 
-As a matter of preference update the widget tree to add padding, divide the space between the two section and change the default colors.
+As a matter of preference update the widget tree to add padding, divide the space between the two section, change the default colors and add a custom font.
 
 Also as a matter of preference stagger the animation for the initial count to have successive columns animated in sequence and with a snappier timing function.
 

@@ -87,3 +87,8 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+  fonts:
+    - family: Heebo
+      fonts:
+        - asset: fonts/Heebo-Regular.ttf
+        - asset: fonts/Heebo-Bold.ttf
