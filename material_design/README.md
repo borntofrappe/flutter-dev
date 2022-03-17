@@ -320,3 +320,167 @@ import 'model/product.dart';
 `products.dart` describes the class, the structure of each product through the different fields.
 
 `products_repository.dart` provides a list of product instances.
+
+## Material Theming
+
+[The codelab](https://codelabs.developers.google.com/codelabs/mdc-103-flutter) focuses on theming with color, shape, elevation and type.
+
+More so than previous codelabs the course points to specific widgets and properties, so that it I prefer to preface each section with a paragaph or two illustrating the key takeaways of each chapter.
+
+### Change the color
+
+A material app and material widgets rely on a set of colors from a theme. Customize the theme to have the color preference cascade throughout the entire application.
+
+---
+
+Create `colors.dart` to specify a few color values in hex color and one color from the `Colors` class, pointing to the Material color palette.
+
+```dart
+const kShrinePink50 = Color(0xFFFEEAE6);
+const kShrinePink100 = Color(0xFFFEDBD0);
+
+// ...
+const kShrineBackgroundWhite = Colors.white;
+```
+
+In `app.dart` import the color file and define an instance of `ThemeData` with an helper function.
+
+```dart
+final ThemeData _kShrineTheme = _buildShrineTheme();
+```
+
+In the body of the function initialize a light theme as a base and include the color values from the custom file in specific properties.
+
+```dart
+final ThemeData base = ThemeData.light();
+
+return base.copyWith(
+  colorScheme: base.colorScheme.copyWith(
+    primary: kShrinePink100,
+    onPrimary:kShrineBrown900 ,
+    secondary: kShrineBrown900,
+    error: kShrineErrorRed,
+  )
+);
+```
+
+Include the theme in the material app widget.
+
+```dart
+MaterialApp(
+  title: 'Shrine',
+  theme: _kShrineTheme,
+)
+```
+
+This has the immediate effect of replacing the default color with the chosen hues.
+
+### Modify typography and label styles
+
+A material app defines a set of styles for text, detailing the size and weight through different properties. Include the values through the theme available on the `context` variable.
+
+---
+
+Require a custom font in the configuration file.
+
+```yaml
+fonts:
+  - family: Rubik
+    fonts:
+      - asset: fonts/Rubik-Regular.ttf
+      - asset: fonts/Rubik-Medium.ttf
+        weight: 500
+```
+
+With this setup the application is able to rely on the fonts at the chosen weights.
+
+In the login page update the uppercase text to show a larger headline.
+
+```dart
+Text(
+  'SHRINE',
+  style: Theme.of(context).textTheme.headline5,
+)
+```
+
+In `app.dart` create a separate helper function to modify a few default options set on the base theme with regards to text.
+
+```dart
+base.copyWith(
+  headline5: base.headline5!.copyWith(
+    fontWeight: FontWeight.w500,
+  ),
+  // ..
+)
+```
+
+Apply the chosen font with a specific color for all text styles.
+
+```dart
+base.copyWith()
+  .apply(
+    fontFamily: 'Rubik',
+    displayColor: kShrineBrown900,
+    bodyColor: kShrineBrown900,
+  )
+```
+
+Include theme in `_buildShrineTheme` extending the text theme of the base instance in the `textTheme` property.
+
+```dart
+textTheme: _buildShrineTextTheme(base.textTheme)
+```
+
+Alongside the theme update the selection theme to use a color from the provided variables.
+
+```dart
+textSelectionTheme: const TextSelectionThemeData(selectionColor: kShrinePink100)
+```
+
+The course continues updating the UI as a matter of preference, but always through values on the theme:
+
+- reduce the importance of the text describing the price in the home screen
+
+- center the text in the home screen in the bottom of each card
+
+- change the theme of the input fields through the theme tapping in the `inputDecorationTheme` property
+
+- remove the fill on the text fields
+
+- always through the input theme add a `focusedBorder` with a stronger contrast to ensure the input is clearly visible
+
+- in the login page update the style of the decorations' labels through `labelStyle`, again to ensure the text be clearly visibile
+
+- define two focus nodes to change the appearance of the labels when the fields receive focus
+
+### Adjust elevation
+
+- remove the elevation set by default on the `Card` widgets
+
+- update the elevation for the `ElevatedButton` widget
+
+### Add shape
+
+In `app.dart` import an additional script provided in the GitHub repo to add rounded corners.
+
+```dart
+import 'package:material_design/supplemental/cut_corners_border.dart';
+```
+
+Update the instance of `InputDecorationTheme` to use the specific `CutCornersBorder()` class instead of the previous `OutlineInputBorder()`.
+
+To have the buttons mirror a similar border add a `BeveledRectangleBorder` in the login page.
+
+Add the shape to the text button as well so that, even if without a solid background, the shape is shown as the button is clicked.
+
+### Change the layout
+
+To have cards positioned and sized with more flair replace `GridView` with `AsymmetricView`. The widget is provided in an additional script from the GitHub repo.
+
+```dart
+import 'package:material_design/supplemental/asymmetric_view.dart';
+```
+
+### Try another theme
+
+With the implemented theming it is possible to radically change the appearance by modifying the starting values.

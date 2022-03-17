@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 import 'model/products_repository.dart';
 import 'model/product.dart';
 
+import 'package:material_design/supplemental/asymmetric_view.dart';
+
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -20,9 +22,10 @@ class HomePage extends StatelessWidget {
 
     return products
         .map((product) => Card(
+            elevation: 0.0,
             clipBehavior: Clip.antiAlias,
             child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   AspectRatio(
                       aspectRatio: 18.0 / 11.0,
@@ -33,7 +36,8 @@ class HomePage extends StatelessWidget {
                         padding:
                             const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
                         child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
                               Text(
                                 product.name,
@@ -43,7 +47,7 @@ class HomePage extends StatelessWidget {
                               const SizedBox(height: 8.0),
                               Text(
                                 formatter.format(product.price),
-                                style: theme.textTheme.subtitle2,
+                                style: theme.textTheme.caption,
                               ),
                             ])),
                   )
@@ -54,40 +58,42 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          leading: IconButton(
-              icon: const Icon(
-                Icons.menu,
-                semanticLabel: 'menu',
-              ),
-              onPressed: () {
-                print('Menu');
-              }),
-          title: const Text('SHRINE'),
-          actions: <Widget>[
-            IconButton(
+        appBar: AppBar(
+            leading: IconButton(
                 icon: const Icon(
-                  Icons.search,
-                  semanticLabel: 'search',
+                  Icons.menu,
+                  semanticLabel: 'menu',
                 ),
                 onPressed: () {
-                  print('Search');
+                  print('Menu');
                 }),
-            IconButton(
-                icon: const Icon(
-                  Icons.tune,
-                  semanticLabel: 'filter',
-                ),
-                onPressed: () {
-                  print('Filter');
-                }),
-          ]),
-      body: GridView.count(
-          padding: const EdgeInsets.all(16.0),
-          crossAxisCount: 2,
-          childAspectRatio: 8.0 / 9.0,
-          children: __buildGridCards(context)),
-      resizeToAvoidBottomInset: false,
-    );
+            title: const Text('SHRINE'),
+            actions: <Widget>[
+              IconButton(
+                  icon: const Icon(
+                    Icons.search,
+                    semanticLabel: 'search',
+                  ),
+                  onPressed: () {
+                    print('Search');
+                  }),
+              IconButton(
+                  icon: const Icon(
+                    Icons.tune,
+                    semanticLabel: 'filter',
+                  ),
+                  onPressed: () {
+                    print('Filter');
+                  }),
+            ]),
+        body: AsymmetricView(
+            products: ProductsRepository.loadProducts(Category.all))
+        // GridView.count(
+        //     padding: const EdgeInsets.all(16.0),
+        //     crossAxisCount: 2,
+        //     childAspectRatio: 8.0 / 9.0,
+        //     children: __buildGridCards(context)),
+        // resizeToAvoidBottomInset: false,
+        );
   }
 }
