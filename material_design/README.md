@@ -6,7 +6,7 @@ _Please note_: Instead of beginning the project from starter repo I try to recre
 
 ## Material Components Basics
 
-[The first codelab](https://codelabs.developers.google.com/codelabs/mdc-101-flutter) focused on the components for the login page.
+[The first codelab](https://codelabs.developers.google.com/codelabs/mdc-101-flutter) focuses on the components for the login page.
 
 ### Setup
 
@@ -147,3 +147,176 @@ Looking through the starter project:
 - set `onGenerateRoute` to handle the navigation
 
 - define `_generateRoute` to return `null` **or** the login route if the name of the input route indeed matches `/login`
+
+## Material Structure and Layout
+
+The [second codelab](https://codelabs.developers.google.com/codelabs/mdc-102-flutter) focuses on the home screen.
+
+### Add a top bar
+
+In `home.dart` add the `appBar` field to the `Scaffold` widget.
+
+```dart
+Scaffold(
+  appBar: AppBar(),
+)
+```
+
+Scaffold is a convenient widget to include app navigation as well as drawers and floating action buttons.
+
+In the instance of `AppBar` specify a title.
+
+```dart
+title: const Text('SHRINE'),
+```
+
+With the `leading` field add an icon button for an hypothetical menu.
+
+```dart
+leading: IconButton(),
+```
+
+The app widget provides helpful fields to add icons beore the title, but also after the string. With the `actions` field add two buttons at the end of the app bar for hypothetical search and filter functions.
+
+```dart
+actions: <Widget>[
+  IconButton(),
+  IconButton(),
+]
+```
+
+Add a `semanticLabel` to the icon widgets.
+
+```dart
+icon: const Icon(
+  Icons.menu,
+  semanticLabel: 'menu',
+)
+```
+
+### Add a card in a grid
+
+A card works as a container for content as well as actions.
+
+Add a `GridView` widget instead of the previous `Center` widget.
+
+```dart
+body: GridView.count()
+```
+
+`GridView.count` describes the grid with several properties:
+
+- `crossAxisCount` points to the number of items in the non-scrolling axis. By default the value describes the number of columns
+
+  ```dart
+  crossAxisCount: 2,
+  ```
+
+- `childAspectRatio` ensures that the items have the same size, considering the width of the grid and padding
+
+  ```dart
+  childAspectRatio: 8.0 / 9.0,
+  ```
+
+- `children` includes the actual content in the grid — at first a single card widget
+
+  ```dart
+  children: <Widget>[Card()]
+  ```
+
+For the card add a `Card` widget with a `child` field. Here create a widget tree to display product info.
+
+```text
+Column
+  AspectRatio
+    Image.asset
+  Padding
+    Column
+      Text
+      SizedBox
+      Text
+```
+
+`AspectRatio` describes the shape of the image.
+
+```dart
+AspectRatio(
+  aspectRatio: 18.0 / 11.0,
+  child: Image.asset(),
+)
+```
+
+### Make a card collection
+
+Extract the logic of the card in a dedicated function, with the goal of producing multiple cards for the `children` field.
+
+```dart
+children: __buildGridCards(context)
+```
+
+In the function produce one card for each product in a list loaded from a local file — see the next section for the product data.
+
+```dart
+List<Product> products = ProductsRepository.loadProducts(Category.all);
+```
+
+With the data refer to the values stored in the products objects. Include for instance the title of the product instead of an hard-coded string.
+
+```dart
+Text(product.name)
+```
+
+For the image update the boxFit property to ensure the images cover the same area in the cards.
+
+```dart
+fit: BoxFit.cover
+```
+
+For the text widgets use the font size established from `theme`, an instance of `ThemeData`.
+
+```dart
+final ThemeData theme = Theme.of(context);
+```
+
+The topic is the subject of the next codelab.
+
+For the price include the value formatted through an instance of the internationalization library.
+
+```dart
+final NumberFormat formatter = NumberFormat.simpleCurrency(locale: Localizations.localeOf(context).toString());
+
+// formatter.format(product.price)
+```
+
+### Product data
+
+For the products update the config file to install two libraries.
+
+```dart
+dependencies:
+  intl: ^0.17.0
+  shrine_images: ^2.0.1
+```
+
+`intl` provides a formatting function for price data.
+
+`shrine_images` is a utility developed for the specific project to retrieve the images in the `packages` folder. To include the assets through the `Image.asset` widget update the config file in the `assets` field, listing the possible images.
+
+```yaml
+assets:
+  - packages/shrine_images/0-0.jpg
+  - packages/shrine_images/1-0.jpg
+  - packages/shrine_images/2-0.jpg
+  # ...
+```
+
+With this setup `home.dart` imports the internationalization library, but also two files provided in the GitHub repository.
+
+```dart
+import 'model/products_repository.dart';
+import 'model/product.dart';
+```
+
+`products.dart` describes the class, the structure of each product through the different fields.
+
+`products_repository.dart` provides a list of product instances.
