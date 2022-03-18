@@ -75,7 +75,11 @@ class ShrineApp extends StatelessWidget {
       title: 'Shrine',
       theme: _kShrineTheme,
       home: Backdrop(
-          backLayer: Container(color: kShrinePink100), frontLayer: HomePage()),
+        backLayer: Container(color: kShrinePink100),
+        frontLayer: HomePage(),
+        backTitle: const Text('MENU'),
+        frontTitle: const Text('SHRINE'),
+      ),
       initialRoute: '/login',
       onGenerateRoute: _generateRoute,
     );

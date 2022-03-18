@@ -685,3 +685,30 @@ The animation has issues with the existing widget tree, so that to avoid errors 
 ### Add a menu on the back layer
 
 ### Add a branded icon
+
+TODO: document branded icon section
+
+```dart
+home: Backdrop(
+  backLayer: Container(color: kShrinePink100),
+  frontLayer: HomePage(),
+  backTitle: const Text('MENU'),
+  frontTitle: const Text('SHRINE'),
+)
+```
+
+```dart
+title: _BackdropTitle(
+  listenable: _controller.view,
+  onPress: _toggleBackdropLayerVisibility,
+  frontTitle: widget.frontTitle,
+  backTitle: widget.backTitle,
+),
+```
+
+```dart
+class _BackdropTitle extends AnimatedWidget {
+}
+```
+
+Shortcut to login page.
