@@ -9,6 +9,9 @@ import 'package:material_design/supplemental/cut_corners_border.dart';
 
 import 'package:material_design/backdrop.dart';
 
+import 'package:material_design/model/product.dart';
+import 'package:material_design/category_menu_page.dart';
+
 final ThemeData _kShrineTheme = _buildShrineTheme();
 
 ThemeData _buildShrineTheme() {
@@ -57,8 +60,21 @@ TextTheme _buildShrineTextTheme(TextTheme base) {
       );
 }
 
-class ShrineApp extends StatelessWidget {
+class ShrineApp extends StatefulWidget {
   const ShrineApp({Key? key}) : super(key: key);
+
+  @override
+  State<ShrineApp> createState() => _ShrineAppState();
+}
+
+class _ShrineAppState extends State<ShrineApp> {
+  Category _currentCategory = Category.all;
+
+  void _onCategoryTap(Category category) {
+    setState(() {
+      _currentCategory = category;
+    });
+  }
 
   Route<dynamic>? _generateRoute(RouteSettings settings) {
     if (settings.name != '/login') return null;
@@ -75,8 +91,12 @@ class ShrineApp extends StatelessWidget {
       title: 'Shrine',
       theme: _kShrineTheme,
       home: Backdrop(
-        backLayer: Container(color: kShrinePink100),
-        frontLayer: HomePage(),
+        currentCategory: _currentCategory,
+        backLayer: CategoryMenuPage(
+            currentCategory: _currentCategory, onCategoryTap: _onCategoryTap),
+        frontLayer: HomePage(
+          category: _currentCategory,
+        ),
         backTitle: const Text('MENU'),
         frontTitle: const Text('SHRINE'),
       ),

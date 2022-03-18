@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:material_design/login.dart';
+import 'package:material_design/model/product.dart';
 
 const double _kFlingVelocity = 2.0;
 
 class Backdrop extends StatefulWidget {
+  final Category currentCategory;
   final Widget backLayer;
   final Widget frontLayer;
   final Widget backTitle;
   final Widget frontTitle;
   const Backdrop(
-      {required this.backLayer,
+      {required this.currentCategory,
+      required this.backLayer,
       required this.frontLayer,
       required this.backTitle,
       required this.frontTitle,
@@ -51,6 +54,17 @@ class _BackdropState extends State<Backdrop>
     super.dispose();
   }
 
+  @override
+  void didUpdateWidget(Backdrop old) {
+    super.didUpdateWidget(old);
+
+    if (widget.currentCategory != old.currentCategory) {
+      _toggleBackdropLayerVisibility();
+    } else if (!_frontLayerVisible) {
+      _controller.fling(velocity: _kFlingVelocity);
+    }
+  }
+
   Widget _buildStack(BuildContext context, BoxConstraints constraints) {
     const double layerTitleHeight = 48.0;
     final Size layerSize = constraints.biggest;
@@ -68,7 +82,9 @@ class _BackdropState extends State<Backdrop>
         excluding: _frontLayerVisible,
       ),
       PositionedTransition(
-          rect: layerAnimation, child: _FrontLayer(child: widget.frontLayer)),
+          rect: layerAnimation,
+          child: _FrontLayer(
+              onTap: _toggleBackdropLayerVisibility, child: widget.frontLayer)),
     ]);
   }
 
@@ -116,8 +132,11 @@ class _BackdropState extends State<Backdrop>
 }
 
 class _FrontLayer extends StatelessWidget {
+  final VoidCallback? onTap;
   final Widget child;
-  const _FrontLayer({required this.child, Key? key}) : super(key: key);
+
+  const _FrontLayer({required this.onTap, required this.child, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +146,16 @@ class _FrontLayer extends StatelessWidget {
           borderRadius: BorderRadius.only(topLeft: Radius.circular(46.0))),
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[Expanded(child: child)]),
+          children: <Widget>[
+            GestureDetector(
+                onTap: onTap,
+                behavior: HitTestBehavior.opaque,
+                child: Container(
+                  height: 40.0,
+                  alignment: AlignmentDirectional.centerStart,
+                )),
+            Expanded(child: child)
+          ]),
     );
   }
 }

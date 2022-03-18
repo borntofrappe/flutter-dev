@@ -684,6 +684,140 @@ The animation has issues with the existing widget tree, so that to avoid errors 
 
 ### Add a menu on the back layer
 
+`category_menu_page.dart`
+
+```
+import 'package:material_design/colors.dart';
+import 'package:material_design/model/product.dart';
+```
+
+```
+Center
+  Container
+    ListView
+      _buildCategory
+```
+
+`_buildCategory`
+
+```
+final categoryString = category.toString().replaceAll('Category.', '').toUpperCase();
+```
+
+```
+GestureDetector
+```
+
+On tap execute the `onTap` callback.
+
+```
+onTap: () => onCategoryTap(category),
+```
+
+Based on `category == currentCategory`
+
+```
+Column
+  SizedBox
+  Text
+  SizedBox
+  Container
+```
+
+```
+Padding
+  Text
+```
+
+---
+
+`ShrineApp` into a stateful widget to manage the category and the tapping function.
+
+```
+import 'package:material_design/model/product.dart';
+import 'package:material_design/category_menu_page.dart';
+```
+
+```
+Category _currentCategory = Category.all;
+void _onCategoryTap(Category category) {
+  setState(() {
+    _currentCategory = category;
+  });
+}
+```
+
+Add category menu page as the back layer.
+
+```
+backLayer: CategoryMenuPage(
+            currentCategory: _currentCategory, onCategoryTap: _onCategoryTap),
+```
+
+Changes the appearance of the menu, but not the items shown in the home screen. Update home page to receive the category and use it in `AsymmetricView`.
+
+```
+ProductsRepository.loadProducts(category)
+```
+
+Send from `app.dart`
+
+```
+frontLayer: HomePage(
+  category: _currentCategory,
+),
+```
+
+Close front layer with the `didUpdateWidget` lifecycle method.
+
+```
+import 'package:material_design/model/product.dart';
+```
+
+```
+final Category currentCategory;
+      required this.currentCategory,
+```
+
+```
+@override
+void didUpdateWidget(Backdrop old) {
+  super.didUpdateWidget(old);
+}
+```
+
+```
+if(widget.currentCategory != old.currentCategory) {
+  _toggleBackdropLayerVisibility();
+} else if(!_frontLayerVisible) {
+  _controller.fling(velocity: _kFlingVelocity);
+}
+```
+
+In `backdrop.dart` GestureDetector the on the wrapper for the front layer
+
+```
+GestureDetector(
+                onTap: onTap,
+                behavior: HitTestBehavior.opaque)
+```
+
+Receive the value alongside the child widget.
+
+```
+final VoidCallback? onTap;
+final Widget child;
+```
+
+Send the value from the instance of the backdrop state.
+
+```
+_FrontLayer(
+    onTap: _toggleBackdropLayerVisibility,
+    child: widget.frontLayer
+)
+```
+
 ### Add a branded icon
 
 TODO: document branded icon section
