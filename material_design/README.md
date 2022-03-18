@@ -484,3 +484,204 @@ import 'package:material_design/supplemental/asymmetric_view.dart';
 ### Try another theme
 
 With the implemented theming it is possible to radically change the appearance by modifying the starting values.
+
+## Material Advanced Components
+
+[The codelab](https://codelabs.developers.google.com/codelabs/mdc-104-flutter) focused on tweaking the existing application with advanced topics such as shape and motion.
+
+### Add the backdrop menu
+
+A backdrop menu as a custom widget composed of multiple widgets. The idea is to use a `Stack` widget to position a front and back layer in the same area and have the backdrop manage the front's visibility.
+
+In `home.dart` start by removing the application bar so that the build method returns only `AsymmetricView`.
+
+In `backdrop.dart` create `Backdrop` as a stateful widget which returns a `Scaffold` widget with a similar `appBar` _and_ a stack built with a helper function.
+
+```dart
+return Scaffold(
+  appBar: appBar,
+  body: _buildStack(),
+);
+```
+
+For the application bar create the widget in the build method. Set specifically an elevation value to avoid showing a shadow below the widget.
+
+```dart
+elevation: 0.0,
+```
+
+For the `_buildStack` function return a `Stack` widget with a key and two children widgets picked up from the widget constructor.
+
+```dart
+return Stack(
+  key: _backdropKey,
+  children: <Widget>[
+    widget.backLayer,
+    widget.frontLayer,
+  ]
+);
+```
+
+To this end define the key as an instance of `GlobalKey`
+
+```dart
+final GlobalKey _backdropKey = GlobalKey(debugLabel: 'Backdrop');
+```
+
+Update the definition of the widget to receive the back and front layers.
+
+```dart
+final Widget backLayer;
+final Widget frontLayer;
+const Backdrop({
+  required this.backLayer,
+  required this.frontLayer,
+  Key? key}) : super(key: key);
+```
+
+In `app.dart` import the Backdrop widget and include an instance in the `home` field.
+
+```dart
+home: Backdrop(),
+```
+
+As a front layer use the home screen, as a tentative back layer use a container with a solid background.
+
+```dart
+home: Backdrop(backLayer: Container(color: kShrinePink100), frontLayer: const HomePage()),
+```
+
+Note that to see the colored background you need to remove the default background color on the home screen's scaffold.
+
+```dart
+backgroundColor: Colors.transparent,
+```
+
+### Add a shape
+
+The idea is to wrap the front layer received through `Backdrop` in a `Material` widget to add a custom shape.
+
+```diff
+widget.frontLayer
++_FrontLayer(child: widget.frontLayer),
+```
+
+Define `_FrontLayer` as a stateless widget which receives a `child` widget.
+
+```dart
+final Widget child;
+const _FrontLayer({ required this.child, Key? key }) : super(key: key);
+```
+
+Return the `child` through the mentioned `Material` widget in a specific widget tree.
+
+```text
+Column
+  Expanded
+    child
+```
+
+The column is to ultimately incorporate other widgets before the child.
+
+For the shape use an instance of `BeveledRectangleBorder`.
+
+```dart
+shape: const BeveledRectangleBorder(
+  borderRadius: BorderRadius.only(topLeft: Radius.circular(46.0)),
+),
+```
+
+### Add motion
+
+The idea is to show the back layer animating the widget from the left.
+
+In `backdrop.dart` define a variable to manage the speed of the fling animation.
+
+```dart
+const double _kFlingVelocity = 2.0;
+```
+
+In the stateful widget create a controller managing its existance with the initState and dispose lifecycle methods.
+
+```dart
+late AnimationController _controller;
+```
+
+With dispose dispose of the resources allocated to the same entity.
+
+```dart
+@override
+void dispose() {
+  _controller.dispose();
+  super.dispose();
+}
+```
+
+With initState instantiate the controller.
+
+```dart
+_controller = AnimationController(
+    duration: const Duration(milliseconds: 300),
+    value: 1.0,
+    vsync: this
+  );
+```
+
+Include the functionality of a specific mixin so that `this` refers to a ticker provider, an object necessary to run the animation.
+
+```dart
+class _BackdropState extends State<Backdrop> with SingleTickerProviderStateMixin {}
+```
+
+To manage the visibility of the back layer create two functions.
+
+Create a getter function to check the animation's status, specicially if the status points to the back layer being visible.
+
+```dart
+bool get _frontLayerVisible {
+  final AnimationStatus status = _controller.status;
+  return status == AnimationStatus.completed ||
+      status == AnimationStatus.forward;
+}
+```
+
+Create a separate function to run the animation.
+
+```dart
+void _toggleBackdropLayerVisibility() {
+  _controller.fling(velocity: _frontLayerVisible? -_kFlingVelocity : _kFlingVelocity);
+}
+```
+
+The negative value when the front layer is visible fligs the animation back.
+
+In the stack wrap the back layer in an ExcludeSemantics widget. The idea is to remove the menu from the application's semantics when the menu is indeed supposed to be hidden.
+
+```dart
+ExcludeSemantics(
+  child: widget.backLayer,
+  excluding: _frontLayerVisible,
+),
+```
+
+To ultimately animate the back layer the animation requires a specific sequence of widgets, so that this section is more imperative than previous ones:
+
+- update `_buildStack` to receive a build context and box constraints
+
+- define an animation with an instance of `RelativeRectTween`. The animation relies on a series of variables considering the height of the constraints object
+
+- wrap `_FrontLayer` in a `PositionedTransition` widget using the animation
+
+- in the `body` field of the scaffold's widget call `_buildStack` through a `LayoutBuilder` widget
+
+- in the `onPressed` field of the application bar invoke the function toggling the menu's visibility
+
+The animation has issues with the existing widget tree, so that to avoid errors you need to:
+
+1. replace the `Columns` in the `product_columns.dart` with `ListView` widgets. This works to avoid overflow
+
+2. update `imageAspectRatio` in `product_columns.dart` to consider a value of `0`
+
+### Add a menu on the back layer
+
+### Add a branded icon

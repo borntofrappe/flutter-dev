@@ -7,6 +7,8 @@ import 'package:material_design/colors.dart';
 
 import 'package:material_design/supplemental/cut_corners_border.dart';
 
+import 'package:material_design/backdrop.dart';
+
 final ThemeData _kShrineTheme = _buildShrineTheme();
 
 ThemeData _buildShrineTheme() {
@@ -72,7 +74,8 @@ class ShrineApp extends StatelessWidget {
     return MaterialApp(
       title: 'Shrine',
       theme: _kShrineTheme,
-      home: const HomePage(),
+      home: Backdrop(
+          backLayer: Container(color: kShrinePink100), frontLayer: HomePage()),
       initialRoute: '/login',
       onGenerateRoute: _generateRoute,
     );
