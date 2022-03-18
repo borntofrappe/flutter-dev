@@ -21,3 +21,11 @@ Follow a codelab from [google developers](https://codelabs.developers.google.com
 ## counter_app
 
 Create a counter application after the image illustrating the development kit on [flutter.dev/learn](https://flutter.dev/learn).
+
+## ticker
+
+Create a counter application where numbers scroll vertically one after the other.
+
+## material_design
+
+Follow a series of codelabs on [flutter.dev](https://codelabs.developers.google.com/codelabs/mdc-101-flutter) to learn Material design.

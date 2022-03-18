@@ -2,15 +2,15 @@
 
 Follow the codelabs on [flutter.dev](https://codelabs.developers.google.com/codelabs/mdc-101-flutter) to learn about material design.
 
-_Please note_: Instead of beginning the project from starter repo I try to recreate the application on my own.
+_Please note_: instead of cloning the project from the Github repository I try to recreate the application on my own, and annotate the process as much as possible.
 
 ## Material Components Basics
 
-[The first codelab](https://codelabs.developers.google.com/codelabs/mdc-101-flutter) focuses on the components for the login page.
+[The first codelab](https://codelabs.developers.google.com/codelabs/mdc-101-flutter) focuses on the login page.
 
 ### Setup
 
-Require the images and fonts from the yaml config file.
+Update `pubspec.yaml` to include the images and fonts from the respective folders.
 
 ```yaml
 assets:
@@ -23,7 +23,7 @@ fonts:
       - asset: fonts/Rubik-Medium.ttf
 ```
 
-In `main.dart` import the login component from `login.dart` and include the widget in an instance of material app in the `home` field.
+In `main.dart` import the login component from `login.dart`. Include the widget in an instance of `MaterialApp` in the `home` field.
 
 ```dart
 runApp(const MaterialApp(
@@ -32,31 +32,27 @@ runApp(const MaterialApp(
 ));
 ```
 
-As the application will later include multiple screens it is likely the more appropriate field is actually `routes`, but I will update the code as needed.
-
-In `login.dart` create a stateful widget which resembles the one highlighted [in the codelab](https://codelabs.developers.google.com/codelabs/mdc-101-flutter#2).
+In `login.dart` create a stateful widget which resembles the one highlighted in the course.
 
 ```text
 Scaffold
-    SafeArea
-        ListView
-            SizedBox
-            Column
-                Image.asset
-                SizedBox
-                Text
-            SizedBox
+  SafeArea
+    ListView
+      SizedBox
+      Column
+        Image.asset
+        SizedBox
+        Text
+      SizedBox
 ```
 
-`SizedBox` is used to add whitespace.
+- `SizedBox` is used to add whitespace
 
-`ListView` works to show items in a list, and I am unsure as to why the widget is chosen in place of `Column` to show the content.
+- `ListView` works to show items in a list, and is chosen over `Column` to allow the container to scroll as the content exceeds the height of the screen
 
 ### Add TextField widgets
 
-The codelab explains the use of `TextField` for username and password. The widget allows to include a floating label and a _touch ripple_, meaning feedback as the user taps the general area.
-
-The course also motivates the `ListView` widget from the previous section to create a _scrollable_ column.
+The codelab explains the use of `TextField` for username and password. The widget includes a floating label and a touch ripple, meaning feedback as the user taps the general area.
 
 Place the widgets after the last `SizedBox`, separating the two vertically with an additional box widget.
 
@@ -76,28 +72,28 @@ For the decoration add a `filled` property to ensure the field is visually separ
 
 ```dart
 const InputDecoration(
-    filled: true,
-    labelText: 'Username'
+  filled: true,
+  labelText: 'Username'
 )
 ```
 
 ### Add buttons
 
-For the login page the course describes two buttons and two widgets: `TextButton` and `ElevatedButton`. The choice is to have the text version describe a secondary action, as opposed to the primary action behind the elevated, more prominent piece of UI.
+For the login page the course describes two buttons with two distinct widgets: `TextButton` and `ElevatedButton`. The choice is to have the text version describe a secondary action, as opposed to the primary action behind the elevated, more prominent piece of UI.
 
 The codelab also introduces the `ButtonBar` widget as a wrapper around the buttons.
 
 ```text
 ButtonBar
-    TextButton
-    ElevatedButton
+  TextButton
+  ElevatedButton
 ```
 
 Include a placeholder callback function in the `onPressed` field to avoid having the widget rendered as disabled.
 
 #### Controllers
 
-In the login widget define two controllers for the input fields.
+Define two controllers for the input fields.
 
 ```dart
 final _usernameController = TextEditingController();
@@ -122,7 +118,7 @@ onPressed: () {
 })
 ```
 
-In the elevated button use the `Navigator` object to remove the login page and move back to the home screen — see the next section.
+In the elevated button use the `Navigator` object to remove the login page and move back to the home screen — see the next section for how the app manages the two pages.
 
 ```dart
 onPressed: () {
@@ -132,17 +128,17 @@ onPressed: () {
 
 #### Pages
 
-`Navigator.pop(context)` works to remove the login page and move _back_ to the home page. To this end you need to update the structure of the application.
+`Navigator.pop(context)` works to remove the login page and move back to the home page. To this end you need to update the structure of the application.
 
 Looking through the starter project:
 
-- in `main.dart` return an instance of `ShrineApp` from `app.dart`
+- in `main.dart` return an instance of `ShrineApp`, imported from `app.dart`
 
 - in `app.dart` create a stateless widget which returns an instance of `MaterialApp` with a particular set of fields
 
-- add the home widget to `home`
+- add the home widget to the `home` field
 
-- set the initial route to `/login`. The idea is to push the login page immediately above the home page
+- set the initial route to `/login`. The idea is to push the login page immediately above the home widget
 
 - set `onGenerateRoute` to handle the navigation
 
@@ -162,7 +158,7 @@ Scaffold(
 )
 ```
 
-Scaffold is a convenient widget to include app navigation as well as drawers and floating action buttons.
+Scaffold is a convenience widget to include app navigation as well as drawers and floating action buttons.
 
 In the instance of `AppBar` specify a title.
 
@@ -176,7 +172,7 @@ With the `leading` field add an icon button for an hypothetical menu.
 leading: IconButton(),
 ```
 
-The app widget provides helpful fields to add icons beore the title, but also after the string. With the `actions` field add two buttons at the end of the app bar for hypothetical search and filter functions.
+The app widget provides helpful fields to add icons before the title, but also after the string. With the `actions` field add two buttons at the end of the app bar for hypothetical search and filter functions.
 
 ```dart
 actions: <Widget>[
@@ -224,7 +220,7 @@ body: GridView.count()
   children: <Widget>[Card()]
   ```
 
-For the card add a `Card` widget with a `child` field. Here create a widget tree to display product info.
+For the card add a `Card` widget with a `child` field. Here create a widget tree to display product information.
 
 ```text
 Column
@@ -254,13 +250,13 @@ Extract the logic of the card in a dedicated function, with the goal of producin
 children: __buildGridCards(context)
 ```
 
-In the function produce one card for each product in a list loaded from a local file — see the next section for the product data.
+In the function produce one card for each product in a list loaded from a local file — see the next section for how the application includes data.
 
 ```dart
 List<Product> products = ProductsRepository.loadProducts(Category.all);
 ```
 
-With the data refer to the values stored in the products objects. Include for instance the title of the product instead of an hard-coded string.
+With the data refer to the values stored in the products objects. Include for instance the title of the product instead of a hard-coded string.
 
 ```dart
 Text(product.name)
@@ -272,13 +268,11 @@ For the image update the boxFit property to ensure the images cover the same are
 fit: BoxFit.cover
 ```
 
-For the text widgets use the font size established from `theme`, an instance of `ThemeData`.
+For the text widgets use the font size established from `theme`, an instance of `ThemeData`. The topic is the subject of the codelab which follows.
 
 ```dart
 final ThemeData theme = Theme.of(context);
 ```
-
-The topic is the subject of the next codelab.
 
 For the price include the value formatted through an instance of the internationalization library.
 
@@ -300,7 +294,7 @@ dependencies:
 
 `intl` provides a formatting function for price data.
 
-`shrine_images` is a utility developed for the specific project to retrieve the images in the `packages` folder. To include the assets through the `Image.asset` widget update the config file in the `assets` field, listing the possible images.
+`shrine_images` is a utility developed for the specific project to retrieve the images in the `packages` folder. To include the assets through the `Image.asset` widget update the config file in the `assets` field with the possible images.
 
 ```yaml
 assets:
@@ -317,15 +311,15 @@ import 'model/products_repository.dart';
 import 'model/product.dart';
 ```
 
-`products.dart` describes the class, the structure of each product through the different fields.
+- `products.dart` describes a class for the structure of each product
 
-`products_repository.dart` provides a list of product instances.
+- `products_repository.dart` provides a list of product instances
 
 ## Material Theming
 
-[The codelab](https://codelabs.developers.google.com/codelabs/mdc-103-flutter) focuses on theming with color, shape, elevation and type.
+[The codelab](https://codelabs.developers.google.com/codelabs/mdc-103-flutter) focuses on theming.
 
-More so than previous codelabs the course points to specific widgets and properties, so that it I prefer to preface each section with a paragaph or two illustrating the key takeaways of each chapter.
+More so than previous codelabs the course points to specific widgets and properties, so that I prefer to preface each section with a paragraph or two illustrating the key takeaways of each chapter.
 
 ### Change the color
 
@@ -333,7 +327,7 @@ A material app and material widgets rely on a set of colors from a theme. Custom
 
 ---
 
-Create `colors.dart` to specify a few color values in hex color and one color from the `Colors` class, pointing to the Material color palette.
+Create `colors.dart` to specify a few color values in hex format and from the `Colors` class, pointing to the Material palette.
 
 ```dart
 const kShrinePink50 = Color(0xFFFEEAE6);
@@ -343,7 +337,7 @@ const kShrinePink100 = Color(0xFFFEDBD0);
 const kShrineBackgroundWhite = Colors.white;
 ```
 
-In `app.dart` import the color file and define an instance of `ThemeData` with an helper function.
+In `app.dart` import the color file and define an instance of `ThemeData` with a helper function.
 
 ```dart
 final ThemeData _kShrineTheme = _buildShrineTheme();
@@ -377,7 +371,7 @@ This has the immediate effect of replacing the default color with the chosen hue
 
 ### Modify typography and label styles
 
-A material app defines a set of styles for text, detailing the size and weight through different properties. Include the values through the theme available on the `context` variable.
+A material app defines a set of styles for text, detailing the size and weight with specific labels. Include the values through the theme available on `context`.
 
 ---
 
@@ -449,7 +443,7 @@ The course continues updating the UI as a matter of preference, but always throu
 
 - always through the input theme add a `focusedBorder` with a stronger contrast to ensure the input is clearly visible
 
-- in the login page update the style of the decorations' labels through `labelStyle`, again to ensure the text be clearly visibile
+- in the login page update the style of the decorations' labels through `labelStyle`, again to ensure the text be clearly visible
 
 - define two focus nodes to change the appearance of the labels when the fields receive focus
 
@@ -487,11 +481,11 @@ With the implemented theming it is possible to radically change the appearance b
 
 ## Material Advanced Components
 
-[The codelab](https://codelabs.developers.google.com/codelabs/mdc-104-flutter) focused on tweaking the existing application with advanced topics such as shape and motion.
+[The codelab](https://codelabs.developers.google.com/codelabs/mdc-104-flutter) focuses on more complex, bespoke widgets as well as shape and animation.
 
 ### Add the backdrop menu
 
-A backdrop menu as a custom widget composed of multiple widgets. The idea is to use a `Stack` widget to position a front and back layer in the same area and have the backdrop manage the front's visibility.
+The backdrop menu is a custom widget composed of multiple widgets. The idea is to use a `Stack` to position a front and back layer in the same area and have the widget manage the menu's visibility.
 
 In `home.dart` start by removing the application bar so that the build method returns only `AsymmetricView`.
 
@@ -545,10 +539,13 @@ In `app.dart` import the Backdrop widget and include an instance in the `home` f
 home: Backdrop(),
 ```
 
-As a front layer use the home screen, as a tentative back layer use a container with a solid background.
+As a front layer use the home screen, while as a first back layer add a container with a solid background.
 
 ```dart
-home: Backdrop(backLayer: Container(color: kShrinePink100), frontLayer: const HomePage()),
+home: Backdrop(
+  backLayer: Container(color: kShrinePink100),
+  frontLayer: const HomePage()
+),
 ```
 
 Note that to see the colored background you need to remove the default background color on the home screen's scaffold.
@@ -570,10 +567,12 @@ Define `_FrontLayer` as a stateless widget which receives a `child` widget.
 
 ```dart
 final Widget child;
-const _FrontLayer({ required this.child, Key? key }) : super(key: key);
+const _FrontLayer({
+  required this.child,
+  Key? key }) : super(key: key);
 ```
 
-Return the `child` through the mentioned `Material` widget in a specific widget tree.
+Return `child` through the mentioned `Material` widget and in a specific widget tree.
 
 ```text
 Column
@@ -581,7 +580,7 @@ Column
     child
 ```
 
-The column is to ultimately incorporate other widgets before the child.
+The column is to ultimately incorporate other widgets before the child — a `GestureDetector` described in a later section.
 
 For the shape use an instance of `BeveledRectangleBorder`.
 
@@ -601,13 +600,13 @@ In `backdrop.dart` define a variable to manage the speed of the fling animation.
 const double _kFlingVelocity = 2.0;
 ```
 
-In the stateful widget create a controller managing its existance with the initState and dispose lifecycle methods.
+In the stateful widget create a controller managing its existence with the `initState` and `dispose` lifecycle methods.
 
 ```dart
 late AnimationController _controller;
 ```
 
-With dispose dispose of the resources allocated to the same entity.
+With `dispose` free the resources allocated to the same entity.
 
 ```dart
 @override
@@ -617,7 +616,7 @@ void dispose() {
 }
 ```
 
-With initState instantiate the controller.
+With `initState` instantiate the controller.
 
 ```dart
 _controller = AnimationController(
@@ -635,7 +634,7 @@ class _BackdropState extends State<Backdrop> with SingleTickerProviderStateMixin
 
 To manage the visibility of the back layer create two functions.
 
-Create a getter function to check the animation's status, specicially if the status points to the back layer being visible.
+Define a getter property to check the animation's status, specifically if the status points to the back layer being visible.
 
 ```dart
 bool get _frontLayerVisible {
@@ -645,7 +644,7 @@ bool get _frontLayerVisible {
 }
 ```
 
-Create a separate function to run the animation.
+Define a separate function to run the animation.
 
 ```dart
 void _toggleBackdropLayerVisibility() {
@@ -653,9 +652,9 @@ void _toggleBackdropLayerVisibility() {
 }
 ```
 
-The negative value when the front layer is visible fligs the animation back.
+The negative value when the front layer is visible flings the animation back.
 
-In the stack wrap the back layer in an ExcludeSemantics widget. The idea is to remove the menu from the application's semantics when the menu is indeed supposed to be hidden.
+In the stack wrap the back layer in an `ExcludeSemantics` widget. The idea is to remove the menu from the application's semantics when the menu is indeed supposed to be hidden.
 
 ```dart
 ExcludeSemantics(
@@ -684,39 +683,47 @@ The animation has issues with the existing widget tree, so that to avoid errors 
 
 ### Add a menu on the back layer
 
-`category_menu_page.dart`
+Create `category_menu_page.dart` for the menu in the back layer. In this file import the material library as well as the color and product class defined for the project.
 
-```
+```dart
 import 'package:material_design/colors.dart';
 import 'package:material_design/model/product.dart';
 ```
 
+Create `CategoryMenuPage` as a stateless widget which receives a specific category and a callback function for when a category is selected.
+
+```dart
+final Category currentCategory;
+final ValueChanged<Category> onCategoryTap;
 ```
+
+Initialize also a list of categories from the product file.
+
+```dart
+final List<Category> _categories = Category.values;
+```
+
+In the `build` method return a specific widget tree.
+
+```text
 Center
   Container
     ListView
-      _buildCategory
 ```
 
-`_buildCategory`
+In `ListView` loop through the list of categories and include the widget from a helper function `_buildCategory`. Here the idea is to return a `GestureDetector` widget with the `onTap` function.
 
-```
-final categoryString = category.toString().replaceAll('Category.', '').toUpperCase();
-```
+As a child then include a different structure if the category matches the current one.
 
-```
-GestureDetector
-```
-
-On tap execute the `onTap` callback.
-
-```
-onTap: () => onCategoryTap(category),
+```dart
+GestureDetector(
+  onTap: () => onCategoryTap(category),
+)
 ```
 
-Based on `category == currentCategory`
+With a match return a `Container` to add a small rectangle behind the option.
 
-```
+```text
 Column
   SizedBox
   Text
@@ -724,21 +731,25 @@ Column
   Container
 ```
 
-```
+Without a match return the string in a `Padding` widget..
+
+```text
 Padding
   Text
 ```
 
----
+To benefit from the menu update `ShrineApp` to a stateful widget. The goal is to manage the category and the tapping function.
 
-`ShrineApp` into a stateful widget to manage the category and the tapping function.
+Import the product class to have access to `Category` and the menu to finally include the menu.
 
-```
+```dart
 import 'package:material_design/model/product.dart';
 import 'package:material_design/category_menu_page.dart';
 ```
 
-```
+Define the category and callback.
+
+```dart
 Category _currentCategory = Category.all;
 void _onCategoryTap(Category category) {
   setState(() {
@@ -747,46 +758,68 @@ void _onCategoryTap(Category category) {
 }
 ```
 
-Add category menu page as the back layer.
+As a back layer include the instance of `CategoryMenuPage` with the appropriate arguments.
 
-```
+```dart
 backLayer: CategoryMenuPage(
-            currentCategory: _currentCategory, onCategoryTap: _onCategoryTap),
+  currentCategory: _currentCategory,
+  onCategoryTap: _onCategoryTap
+),
 ```
 
-Changes the appearance of the menu, but not the items shown in the home screen. Update home page to receive the category and use it in `AsymmetricView`.
+This works to change the appearance of the menu, but not the items shown in the home screen. To have the change reflected in the home page update `home.dart` to load only the products specified by the category.
 
-```
-ProductsRepository.loadProducts(category)
+```diff
+-ProductsRepository.loadProducts(products)
++ProductsRepository.loadProducts(category)
 ```
 
-Send from `app.dart`
+Update `home.dart` to receive the category.
 
+```dart
+class HomePage extends StatelessWidget {
+  final Category category;
+
+  const HomePage({this.category = Category.all, Key? key}) : super(key: key);
+}
 ```
+
+Pass the category through the instance of `ShrineApp`.
+
+```dart
 frontLayer: HomePage(
   category: _currentCategory,
 ),
 ```
 
-Close front layer with the `didUpdateWidget` lifecycle method.
+The menu is styled and interactive. It is however useful to close the menu as one of the categories is selected. This is achieved through the `didUpdateWidget` lifecycle method.
 
-```
+In `backdrop.dart` import the product class to have access to `Category`.
+
+```dart
 import 'package:material_design/model/product.dart';
 ```
 
-```
-final Category currentCategory;
-      required this.currentCategory,
+Receive the current category in the instance of `Backdrop`, among the other properties.
+
+```dart
+class Backdrop extends StatefulWidget {
+  final Category currentCategory;
+}
 ```
 
-```
+Override `didUpdateWidget`.
+
+```dart
 @override
 void didUpdateWidget(Backdrop old) {
   super.didUpdateWidget(old);
 }
 ```
 
-```
+Manage the visibility of the menu considering the category of the old and current widget.
+
+```dart
 if(widget.currentCategory != old.currentCategory) {
   _toggleBackdropLayerVisibility();
 } else if(!_frontLayerVisible) {
@@ -794,24 +827,27 @@ if(widget.currentCategory != old.currentCategory) {
 }
 ```
 
-In `backdrop.dart` GestureDetector the on the wrapper for the front layer
+The menu opens and closes with the button in the top left corner, or again by selecting an option. The course goes further to toggle the list of categories when pressing the screen in a specific area.
 
-```
+In `backdrop.dart` add a `GestureDetector` widget before the `Expanded` widget wrapping around the child.
+
+```dart
 GestureDetector(
-                onTap: onTap,
-                behavior: HitTestBehavior.opaque)
+  onTap: onTap,
+  behavior: HitTestBehavior.opaque
+)
 ```
 
-Receive the value alongside the child widget.
+Include the function alongside the child widget.
 
-```
+```dart
 final VoidCallback? onTap;
 final Widget child;
 ```
 
-Send the value from the instance of the backdrop state.
+Send the value from the instance of `_BackdropState`.
 
-```
+```dart
 _FrontLayer(
     onTap: _toggleBackdropLayerVisibility,
     child: widget.frontLayer
@@ -820,7 +856,9 @@ _FrontLayer(
 
 ### Add a branded icon
 
-TODO: document branded icon section
+In place of the string 'SHRINE' the idea is to update the design with another custom widget.
+
+Update `Backdrop` to receive two titles, one for the back menu and one for the front layer.
 
 ```dart
 home: Backdrop(
@@ -831,6 +869,8 @@ home: Backdrop(
 )
 ```
 
+Include the values in a `_BackdropTitle` widget alongside the controller to manage the animation and the toggling function to show /hide the categories.
+
 ```dart
 title: _BackdropTitle(
   listenable: _controller.view,
@@ -840,9 +880,13 @@ title: _BackdropTitle(
 ),
 ```
 
+Define `_BackdropTitle` as an animated widget with the titles and callback function.
+
 ```dart
 class _BackdropTitle extends AnimatedWidget {
 }
 ```
 
-Shortcut to login page.
+In the `build` function return a `Row` with the two strings of text. Nest the titles in a series of `Opacity` and `FractionalTranslation` widgets to show one or the other according to the animation's value.
+
+The actual implementation is worth exploring, while beyond the scope of the project folder.
