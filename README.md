@@ -32,4 +32,8 @@ Follow a series of codelabs on [flutter.dev](https://codelabs.developers.google.
 
 ## text_input
 
-Follow several recipes to learn about the widgets used to collect text input.
+Follow several recipes on [docs.flutter.dev](https://docs.flutter.dev/cookbook/forms) to learn about the widgets used to collect text input.
+
+## dialog
+
+Create a series of widgets connected to the `Dialog` class.
