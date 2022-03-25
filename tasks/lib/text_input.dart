@@ -1,7 +1,37 @@
 import 'package:flutter/material.dart';
 
-class TextInput extends StatelessWidget {
+class TextInput extends StatefulWidget {
   const TextInput({ Key? key }) : super(key: key);
+
+  @override
+  State<TextInput> createState() => _TextInputState();
+}
+
+class _TextInputState extends State<TextInput> {
+  late TextEditingController _controller;
+  late FocusNode _focusNode;
+  bool isEmpty = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = TextEditingController();
+    _focusNode = FocusNode();
+    _controller.addListener(() {
+      setState(() {
+        isEmpty = _controller.text.isEmpty;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focusNode.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +51,14 @@ class TextInput extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               TextFormField(
+                controller: _controller,
+                focusNode: _focusNode,
+                onFieldSubmitted: (String text) {
+                  if(text.isNotEmpty) {
+                    print(text);
+                    _controller.clear();
+                  } // consider whether or not to retain focus
+                },
                 decoration: const InputDecoration(
                   icon: Icon(Icons.check_box_outline_blank_rounded, size: 24.0,),
                   hintText: 'Create task',
@@ -33,10 +71,14 @@ class TextInput extends StatelessWidget {
               ),
               Row(
             mainAxisAlignment: MainAxisAlignment.end,
-                children: const <Widget>[
+                children: <Widget>[
                   TextButton(
-                    child: Text('Done', style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
-                    onPressed: null,
+                    child: const Text('Done', style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+                    onPressed: isEmpty ? null : () {
+                      print(_controller.text);
+                      _controller.clear();
+                      _focusNode.unfocus();
+                    },
                   ),
                 ],
               )
