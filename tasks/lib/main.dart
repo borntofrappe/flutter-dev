@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tasks/empty_state.dart';
+import 'package:tasks/text_input.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,17 +32,12 @@ class _MyTasksPageState extends State<MyTasksPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: const Center(
-        child: EmptyState(),
+      backgroundColor: Colors.grey[200],
+      body: const Align(
+        alignment: Alignment.bottomCenter,
+        child: TextInput(),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-        tooltip: 'Add task',
-        onPressed: () {},
-      ),
+      floatingActionButton: null,
     );
   }
 }
