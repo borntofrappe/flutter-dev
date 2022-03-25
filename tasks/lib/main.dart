@@ -32,6 +32,7 @@ class _MyTasksPageState extends State<MyTasksPage> {
   late FocusNode _focusNode;
   bool _hasFocus = false;
   bool _isEmpty = true;
+  final List<String> _tasks = <String>[];
 
   @override
   void initState() {
@@ -58,9 +59,47 @@ class _MyTasksPageState extends State<MyTasksPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
-      body: const Center(
-        child: EmptyState(),
+      backgroundColor: Colors.grey[100],
+      body: Center(
+        child: _tasks.isEmpty
+            ? const EmptyState()
+            : ListView(
+                children: _tasks
+                    .map((task) => Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8.0, horizontal: 16.0),
+                          child: Container(
+                            decoration: const BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Color.fromARGB(255, 225, 225, 225),
+                                      offset: Offset(0, 3),
+                                      blurRadius: 8.0),
+                                ],
+                                color: Colors.white,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(24.0))),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ListTile(
+                                title: Text(task),
+                                trailing: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _tasks.remove(task);
+                                    });
+                                  },
+                                  icon: const Icon(
+                                    Icons.delete_outline_rounded,
+                                    color: Colors.black45,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ))
+                    .toList(),
+              ),
       ),
       floatingActionButton: _hasFocus
           ? null
@@ -120,7 +159,9 @@ class _MyTasksPageState extends State<MyTasksPage> {
                                 },
                                 onFieldSubmitted: (String text) {
                                   if (text.isNotEmpty) {
-                                    print(text);
+                                    setState(() {
+                                      _tasks.insert(0, text);
+                                    });
                                     _controller.clear();
                                     setState(() {
                                       _isEmpty = true;
@@ -157,7 +198,10 @@ class _MyTasksPageState extends State<MyTasksPage> {
                                     onPressed: _isEmpty
                                         ? null
                                         : () {
-                                            print(_controller.text);
+                                            setState(() {
+                                              _tasks.insert(
+                                                  0, _controller.text);
+                                            });
                                             _controller.clear();
                                             _focusNode.unfocus();
                                             setState(() {
