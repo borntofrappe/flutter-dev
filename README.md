@@ -29,11 +29,3 @@ Create a counter application where numbers scroll vertically one after the other
 ## material_design
 
 Follow a series of codelabs on [flutter.dev](https://codelabs.developers.google.com/codelabs/mdc-101-flutter) to learn Material design.
-
-## text_input
-
-Follow several recipes on [docs.flutter.dev](https://docs.flutter.dev/cookbook/forms) to learn about the widgets used to collect text input.
-
-## dialog
-
-Create a series of widgets connected to the `Dialog` class.
