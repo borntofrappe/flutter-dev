@@ -15,3 +15,7 @@ A few remarks to preface the repository:
   +    size: 64.0,
   )
   ```
+
+## startup_name_generator
+
+Follow the codelabs on [flutter.dev](https://flutter.dev/docs/get-started/codelab) to create "your first Flutter app".

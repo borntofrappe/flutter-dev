@@ -2,7 +2,6 @@
 
 ## [Write your first Flutter app, part 1](https://codelabs.developers.google.com/codelabs/first-flutter-app-pt1)
 
-
 ### Starter Flutter app
 
 Copy-paste to `lib/main.dart`.
@@ -249,10 +248,236 @@ Widget _buildRow(WordPair pair) {
 }
 ```
 
-
 Call the function instead of returning the list tile widget.
 
 ```dart
 return _buildRow(_suggestions[index]);
 ```
 
+## [Write your first Flutter app, part 2](https://codelabs.developers.google.com/codelabs/first-flutter-app-pt2)
+
+### Add icons to the list
+
+In the class extending the state, past the list of suggestions, define a set to keep track of saved word pairs.
+
+```dart
+final _saved = <WordPair>{};
+```
+
+In `_buildRow`, the function responsible for the widget tree of an individual pair, consider whether or not the pair is included in the set.
+
+```dart
+Widget _buildRow(WordPair pair) {
+  final alreadySaved = _saved.contains(pair);
+}
+```
+
+In ListTile add the `trailing` field to add an icon widget at the end of the tile.
+
+```dart
+ListTile(
+  title: Text(),
+  trailing: Icon(),
+)
+```
+
+Use the boolean to change the design of the icon.
+
+```dart
+trailing: Icon(
+  alreadySaved ? Icons.favorite : Icons.favorite_border,
+  color: alreadySaved ? Colors.red : null,
+  semanticLabel: alreadySaved ? 'Remove from saved' : 'Save',
+),
+```
+
+If the word pair is included in the set `alreadySaved` resolves to `true`. In this instance include a solid, red icon and the label 'Removed from saved'. Otherwise show the outline of the same icon with the label 'Save'.
+
+### Add interactivity
+
+Add an `onTap` field to the `ListTile` widget. The field describes a function which is called as the tile is tapped.
+
+```dart
+ListTile(
+  title: Text(),
+  trailing: Icon(),
+  onTap: () {}
+)
+```
+
+The idea is to add or remove the specific pair considering the boolean `alreadySaved`.
+
+```dart
+if(alreadySaved) {
+  _saved.remove(pair);
+} else {
+  _saved.add(pair);
+}
+```
+
+To have the change reflected in the application update the set in an anonymous function nested in `setState`.
+
+```dart
+setState(() {
+  if(alreadySaved) {
+    _saved.remove(pair);
+  } else {
+    _saved.add(pair);
+  }
+});
+```
+
+Every time you call `setState` Flutter calls the `build` function of the stateful widget.
+
+### Navigate to a new screen
+
+The goal is to show a list of only the word pairs stored in the `_saved` set in a separate screen.
+
+The `Navigator` manages a stack of routes. You push a route onto the navigator to display a different screen. You pop the route to return to the previous page.
+
+Add an `actions` field to the `AppBar` widget.
+
+```dart
+appBar: AppBar(
+  title: const Text(),
+  actions: []
+)
+```
+
+The field receives a list of widgets which are rendered to the right of the bar's title.
+
+In the list add a button widget with a specific icon and a tooltip, a label shown as the icon is pressed for a brief amount of time.
+
+```dart
+actions: [
+  IconButton(
+    icon: const Icon(Icons.list),
+    tooltip: 'Saved Suggestions',
+    onPressed: () {},
+  )
+]
+```
+
+With the `onPressed` field describe the functionality of the widget as the button is selected.
+
+The course extracts the logic in a separate function, but it would be possible to include the instruction directly between curly braces.
+
+```dart
+onPressed: _pushSaved,
+```
+
+Define `_pushSaved` to call `Navigator.of(context).push`.
+
+```dart
+void _pushSaved() {
+  Navigator.of(context).push(
+
+  );
+}
+```
+
+`context` is how a widget knows its location.
+
+In the `push` function use `MaterialPageRoute` and its `builder` field to produce the widget tree for the new page.
+
+```dart
+Navigator.of(context).push(
+  MaterialPageRoute<void>(
+    builder: (context) {}
+  )
+);
+```
+
+The function receives the context and returns the widget(s) for the new page.
+
+Return a `Scaffold` widget with an application bar and a `ListView` widget.
+
+```dart
+builder: (context) {
+
+  return Scaffold(
+    appBar: AppBar(),
+    body: ListView()
+  );
+}
+```
+
+The structure is similar to the widget tree of the main route.
+
+For the list view add a `children` field to include a list of widgets.
+
+```dart
+body: ListView(
+  children: []
+)
+```
+
+The idea is to replicate the tree of the main route, with word pairs in `ListTile` widgets separated by `Divider` widgets.
+
+Loop through the `_saved` set to create the tiles.
+
+```dart
+final tiles = _saved.map(
+  (pair) {
+    return ListTile(
+      title: Text(pair.asPascalCase)
+    );
+  }
+);
+```
+
+Create the children list, named `divided` out of preference, to separate multiple tiles with the divider.
+
+```dart
+final divided = tiles.isNotEmpty
+  ? // add divider
+  : <Widget>[];
+```
+
+If the collection is empty `divided` is an empty list and the screen does not include a single tile.
+
+If the collection is not empty the course adds a divider with a helper method `divideTiles`.
+
+```dart
+ListTile.divideTiles(
+  context: context,
+  tiles: tiles,
+).toList()
+```
+
+The application is functionally complete.
+
+As you tap the list icon `Navigator` pushes the new page on top of the existing screen. The application bar automatically adds a button to move back to the previous route.
+
+### Change the UI using themes
+
+Update the instance of `MaterialApp` through the `theme` field to change the overall look of the application.
+
+```dart
+return MaterialApp(
+  theme: ThemeData()
+)
+```
+
+The course instructs to move the `const` constructor from `MaterialApp` to the `home` field.
+
+```diff
+return const MaterialApp(
+-return MaterialApp(
+
+home: RandomWords()
++home: const RandomWords()
+```
+
+For the appearance use the `ThemeData` widget to modify the default values, set by the emulator, for instance for the application bar.
+
+```dart
+ThemeData(
+  appBarTheme: const AppBarTheme(
+    backgroundColor: Colors.white,
+    foregroundColor: Colors.black
+  )
+)
+```
+
+The `AppBarTheme` changes the default background and foreground color.
