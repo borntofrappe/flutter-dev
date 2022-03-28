@@ -23,3 +23,7 @@ Follow the codelabs on [flutter.dev](https://flutter.dev/docs/get-started/codela
 ## building_layouts
 
 Follow the tutorial on [flutter.dev](https://docs.flutter.dev/development/ui/layout/tutorial) with a focus on layout widgets.
+
+## adding_interactivity
+
+Follow the tutorial on [flutter.dev](https://docs.flutter.dev/development/ui/interactive) with a focus on interactivity.
