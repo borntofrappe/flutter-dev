@@ -24,11 +24,9 @@ The first row is divided in three sections with a column of text, a star icon an
 
 The second row is divided in three sections, three columns laid side by side. Each column includes an icon and text — although it is likely the elements should be buttons.
 
-The tutorial suggests a _bottom-up_ approach and to use variables and functions.
-
 ## Setup
 
-Refer to the image in the `pubspec.yaml` config file.
+Add the image locally and refer to the asset in the `pubspec.yaml` config file.
 
 ```yaml
 flutter
@@ -41,3 +39,172 @@ flutter
 To rehearse the lessons learned with previous tutorials I tried to create the layout on my own. You can find this first implementation in `lib/naive.dart`.
 
 ---
+
+The tutorial suggests a _bottom-up_ approach and to use variables and functions.
+
+## Implement the title row
+
+At the top of the `build` method create a `Widget` describing the title section. This widget is a container with some padding and the following tree structure.
+
+```text
+Container
+  Row
+      Expanded
+          Column
+              Container
+                  Text
+              Text
+      Icon
+      Text
+```
+
+The second container nested in the column widget helps to separate the two text elements vertically. The tutorial adds whitespace in the form of bottom padding.
+
+```dart
+padding: const EdgeInsets.only(bottom: 8)
+```
+
+Include the widget in the `body` field of `Scaffold`, wrapping the helper structure in a column, to ultimately display the content in rows.
+
+```dart
+Scaffold(
+    body: Column(children: [titleSection],),
+)
+```
+
+## Implement the button row
+
+Past `titleSection` define a widget for the section devoted to the buttons. Since the section repeats much of the logic for the buttons however, create a helper function to return the widgets on the basis of color, icon and label-
+
+```dart
+Column _buildButtonColumn(Color color, IconData icon, String label) {}
+```
+
+Notice the return value which describes the column widget.
+
+In the body of the function return a column with the following tree structure.
+
+```dart
+Icon
+Container
+    Text
+```
+
+Once again the container helps to separate the content, this time with top padding.
+
+On the main axis align the content to have the icon and text centered.
+
+```dart
+mainAxisAlignment: MainAxisAlignment.center,
+```
+
+For the column the tutorial also adds a `mainAxisSize` property.
+
+```dart
+mainAxisSize: MainAxisSize.min,
+```
+
+While the property doesn't seem to affect the application [the documentation](https://api.flutter.dev/flutter/widgets/Flex/mainAxisSize.html) elaborates how the value is updated to handle the space in the main axis — here the column. With `min` the column is as tall as strictly necessary to render the icon and label.
+
+With this setup produce the buttons calling the function directly.
+
+```dart
+_buildButtonColumn(color, Icons.share, 'SHARE');
+```
+
+For the color define the variable so that the buttons inherit the color from the theme.
+
+```dart
+Color color = Theme.of(context).primaryColor;
+```
+
+Create a widget in the build method for the section to nest the buttons in a row.
+
+```dart
+Row(
+    children: [
+        _buildButtonColumn(),
+        _buildButtonColumn(),
+        _buildButtonColumn(),
+    ]
+)
+```
+
+Align the items on the main axis to space the columns evenly.
+
+```dart
+mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+```
+
+Similarly to the title section, add the widget in the scaffold's column.
+
+```dart
+Scaffold(
+    body: Column(children: [
+        titleSection,
+        buttonSection
+    ]),
+)
+```
+
+## Implement the text section
+
+For the block of text define a padding widget with some padding and a single widget, `Text`.
+
+Include in the column after the button section.
+
+```dart
+Scaffold(
+    body: Column(children: [
+        titleSection,
+        buttonSection
+        textSection
+    ]),
+)
+```
+
+The tutorial also argues for the `softWrap` property to consider word boundaries.
+
+```dart
+softWrap: true
+```
+
+## Implement the image section
+
+As per the instruction in the setup section add the image is available through the `pubspec.yaml` config file.
+
+Add the image with the `Image.asset` widget directly in the scaffold's column.
+
+```dart
+Scaffold(
+    body: Column(children: [
+        Image.asset(),
+        titleSection,
+        buttonSection
+        textSection
+    ]),
+)
+```
+
+In terms of properties point to the image stored locally in the `images` folder and specify a width and height.
+
+With `fit` expand the image to cover the container.
+
+```dart
+fit: BoxFit.cover
+```
+
+## Final touch
+
+Replace the scaffold's column widget with a `ListView` widget. The widget supports scrolling for devices which are not tall enough.
+
+```diff
+-body: Column(children: [
++body: ListView(children: [
+```
+
+Without this precaution, and if you were to extend the content past the viewport, Flutter would highlight a ReferFlex overflow at the bottom.
+
+```text
+A RenderFlex overflowed by 203 pixels on the bottom.
+```
