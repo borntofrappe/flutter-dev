@@ -19,3 +19,7 @@ A few remarks to preface the repository:
 ## startup_name_generator
 
 Follow the codelabs on [flutter.dev](https://flutter.dev/docs/get-started/codelab) to create "your first Flutter app".
+
+## building_layouts
+
+Follow the tutorial on [flutter.dev](https://docs.flutter.dev/development/ui/layout/tutorial) with a focus on layout widgets.
