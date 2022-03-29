@@ -27,3 +27,7 @@ Follow the tutorial on [flutter.dev](https://docs.flutter.dev/development/ui/lay
 ## adding_interactivity
 
 Follow the tutorial on [flutter.dev](https://docs.flutter.dev/development/ui/interactive) with a focus on interactivity.
+
+## friendly_chat
+
+Follow a codelab from [google developers](https://codelabs.developers.google.com/codelabs/flutter) with a focus on beautiful UI.
