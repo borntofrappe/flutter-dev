@@ -31,3 +31,7 @@ Follow the tutorial on [flutter.dev](https://docs.flutter.dev/development/ui/int
 ## friendly_chat
 
 Follow a codelab from [google developers](https://codelabs.developers.google.com/codelabs/flutter) with a focus on beautiful UI.
+
+## counter
+
+Create a counter application after the image illustrating the development kit on [flutter.dev/learn](https://flutter.dev/learn).
