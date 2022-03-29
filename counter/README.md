@@ -4,9 +4,11 @@
 
 ![Counter app](https://storage.googleapis.com/cms-storage-bucket/740d82517a6f13db51bd.png)
 
-The goal of this project is to recreate the application focusing on the feature first and the overall design second.
+The goal of this project is to recreate the application focusing on the feature first and the overall design second. Data is persisted through [`shared-preferences`](https://pub.dev/packages/shared_preferences).
 
-## counter
+## Counter
+
+> refer to `counter.dart`
 
 The first step is creating a stateful widget, keeping track of a counter variable.
 
@@ -48,6 +50,8 @@ Column
 ```
 
 ## Shared preferences
+
+> refer to `shared_preferences.dart`
 
 Install `shared-preferences` with the ultimate goal of saving the value locally in a key-value pair.
 
@@ -144,4 +148,93 @@ Store the new value.
 
 ```dart
 instance.setInt('counter', _counter);
+```
+
+## Design
+
+> refer to `main.dart`
+
+### Layout
+
+The application begins with a `MaterialApp` and `Scaffold` widgets. From this starting point wrap the content in a `SafeArea` to push the child below the space of the status bar.
+
+Wrap `SafeArea` in a `Container` to include the gradient — explained in the next section.
+
+Past `Padding` widgets to separate the content from the surrounding sections create the following widget tree.
+
+```text
+Column
+  Text
+  Expanded
+    Center
+      Text
+  Row
+    IconButton
+    IconButton
+```
+
+Wrap the row in a `ConstrainedBox` widget to avoid having the buttons too further apart on larger screens.
+
+Additionally, wrap each button in a `Container` widget to include the rounded border — explained in the next section.
+
+### Style
+
+Add a custom font through the yaml configuration file.
+
+```yaml
+fonts:
+  - family: Ubuntu
+    fonts:
+      - asset: fonts/Ubuntu-Bold.ttf
+```
+
+Reference the family by the specified string.
+
+```dart
+TextStyle(
+  fontFamily: 'Ubuntu'
+)
+```
+
+In terms of color specify a particular hex value with the `0xff` prefix. `0x` works to describe hexadecimal notation, `ff` describes the opacity — fully opaque.
+
+```dart
+Color color = const Color(0xff043875);
+```
+
+For the gradient use the `LinearGradient` widget, specifying the hex colors in the appropriate field.
+
+```dart
+LinearGradient(
+  colors: [
+    Color(0xffc6bafa),
+    Color(0xffefbad7),
+  ],
+)
+```
+
+Use additional fields to customize the gradient as a matter of preference.
+
+Include the widget in a `BoxDecoration` and in the `decoration` property of a generic `Container`.
+
+```dart
+decoration: BoxDecoration(
+  gradient: LinearGradient
+)
+```
+
+Rounded borders follow a similar pattern. Add a `Container`, a `decoration` field and a `BoxDecoration` widget. In this instance, however, point to the border property instead of the gradient.
+
+```dart
+decoration: BoxDecoration(
+  border: Border.all(color: color, width: 4.0)
+)
+```
+
+For rounded corners add an additional widget as `borderRadius`.
+
+```dart
+BoxDecoration(
+  borderRadius: BorderRadius.circular(50)
+)
 ```
