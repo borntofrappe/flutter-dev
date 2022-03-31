@@ -6,13 +6,6 @@ Implement the recipes illustrating how Flutter manages [navigation](https://docs
 
 [Navigate to a new screen and back](https://docs.flutter.dev/cookbook/navigation/navigation-basics)
 
-<!-- ## Animate a widget across screens
+## named_routes
 
-
-## Navigate with named routes
-
-## Pass arguments to a named route
-
-## Return data from a screen
-
-## Send data to a new screen -->
+[Navigate with named routes](https://docs.flutter.dev/cookbook/navigation/named-routes)
