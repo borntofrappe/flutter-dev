@@ -24,7 +24,7 @@ How to:
 
 8. in `Navigator.pop` pass the current context
 
-## [named_routes](https://codepen.io/borntofrappe/pen/YzYrvoe)
+## [named_routes](https://codepen.io/borntofrappe/pen/VwyMGbo)
 
 Following the example of the recipe [_Navigate with named routes_](https://docs.flutter.dev/cookbook/navigation/named-routes) move between two routes with `Navigator.pushNamed`.
 
@@ -57,3 +57,7 @@ By default `MaterialApp` refers to the widget named `/`. Change this default wit
 [Send data to a new screen](https://docs.flutter.dev/cookbook/navigation/passing-data)
 
 [Animate a widget across screens](https://docs.flutter.dev/cookbook/navigation/hero-animations)
+
+## [navigation_arguments](https://codepen.io/borntofrappe/pen/eYyGjev)
+
+Following the example of the recipe [_Pass arguments to a named route_](https://docs.flutter.dev/cookbook/navigation/navigate-with-arguments) move between two routes with `Navigator.pushNamed` and the `arguments` parameter.
