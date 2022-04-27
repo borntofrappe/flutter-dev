@@ -35,3 +35,7 @@ Follow a codelab from [google developers](https://codelabs.developers.google.com
 ## counter
 
 Create a counter application after the image illustrating the development kit on [flutter.dev/learn](https://flutter.dev/learn).
+
+## hive
+
+Follow a [Youtube tutorial](https://youtu.be/R1GSrrItqUs) with a focus on local data storage through the `hive` library.
